@@ -1,0 +1,9 @@
+# IntelliJ/CLion stuff.
+.idea/
+
+# Finder junk.
+.DS_Store
+
+# Build path/binaries.
+cmake-build-*/
+
