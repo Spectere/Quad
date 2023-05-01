@@ -120,7 +120,6 @@ set(SRC_RENDER_GL
     src/render_gl/gl_rmisc.c
     src/render_gl/gl_rsurf.c
     src/render_gl/gl_screen.c
-    src/render_gl/gl_test.c
     src/render_gl/gl_warp.c             src/render_gl/gl_warp_sin.h
                                         src/render_gl/glquake.h
 )
@@ -130,7 +129,7 @@ include_directories(${SDL2_INCLUDE_DIRS})
 link_libraries(${SDL2_LIBRARIES})
 
 # Common compiler settings.
-add_compile_options(-Werror-implicit-function-declaration)
+add_compile_options(-Wall)
 
 ###                     ################################################################################################
 ###  SOFTWARE RENDERER  ################################################################################################

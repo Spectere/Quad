@@ -73,7 +73,7 @@ qboolean SNDDMA_Init(void) {
     audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 1);
 
     // Configure Quake's sound system.
-    memset((void*)&sn, 0, sizeof(sn));
+    memset((void *)&sn, 0, sizeof(sn));
     shm = &sn;
 
     shm->channels = have.channels;
@@ -85,7 +85,7 @@ qboolean SNDDMA_Init(void) {
     shm->submission_chunk = 1;
 
     audio_buffer_len = shm->samples * (shm->samplebits / 8);
-    shm->buffer = (unsigned char*)calloc(1, audio_buffer_len);
+    shm->buffer = (unsigned char *)calloc(1, audio_buffer_len);
     if(shm->buffer == NULL) {
         Con_Printf("Error allocating audio buffer.\n");
         initialized = false;
