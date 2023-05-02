@@ -21,11 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stddef.h>
 #include <unistd.h>
-#include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <errno.h>
 #include "sys_sdl2.h"
+
+#ifdef POSIX
+#include <sys/time.h>
+#endif
 
 #define DEFAULT_HEAPSIZE (32 * 1024 * 1024)  // 32MiB
 
@@ -144,7 +147,7 @@ void Sys_Quit (void) {
 }
 
 double Sys_FloatTime (void) {
-#if 0
+#ifdef POSIX
     // POSIX-y time implementation.
     struct timeval tp;
     struct timezone tzp;
@@ -158,10 +161,10 @@ double Sys_FloatTime (void) {
     }
 
     return (tp.tv_sec - secbase) + tp.tv_usec / 1000000.0;
-#endif
-
+#else
     // SDL time implementation.
     return (double)SDL_GetTicks64() / 1000;
+#endif // POSIX
 }
 
 char *Sys_ConsoleInput (void) {  // TODO: Might have to rework this for Win32 (does it have unistd.h?)

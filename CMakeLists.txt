@@ -9,6 +9,11 @@ find_package(OpenGL REQUIRED)
 
 set(CMAKE_C_STANDARD 99)
 
+# Platform-specific definitions.
+if(UNIX OR MINGW OR MSYS)
+    add_compile_definitions(POSIX)
+endif()
+
 set(SRC_COMMON
                                         src/render_common/anorms.h
                                         src/bspfile.h
