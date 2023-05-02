@@ -789,9 +789,6 @@ void GetSoundtime(void) {
 
 // it is possible to miscount buffers if it has wrapped twice between
 // calls to S_Update.  Oh well.
-#ifdef __sun__
-    soundtime = SNDDMA_GetSamples();
-#else
     samplepos = SNDDMA_GetDMAPos();
 
     if(samplepos < oldsamplepos) {
@@ -806,7 +803,6 @@ void GetSoundtime(void) {
     oldsamplepos = samplepos;
 
     soundtime = buffers * fullsamples + samplepos / shm->channels;
-#endif
 }
 
 void S_ExtraUpdate(void) {

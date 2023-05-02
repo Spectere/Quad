@@ -22,8 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../quakedef.h"
 #include "soft_r_local.h"
 
-//define	PASSAGES
-
 void *colormap;
 vec3_t viewlightvec;
 alight_t r_viewlighting = { 128, 192, viewlightvec };
@@ -138,9 +136,6 @@ cvar_t r_aliastransbase = { "r_aliastransbase", "200" };
 cvar_t r_aliastransadj = { "r_aliastransadj", "100" };
 
 extern cvar_t scr_fov;
-
-void CreatePassages(void);
-void SetVisibilityByPassages(void);
 
 /*
 ==================
@@ -279,9 +274,6 @@ void R_NewMap(void) {
 
     r_dowarpold = false;
     r_viewchanged = false;
-#ifdef PASSAGES
-    CreatePassages ();
-#endif
 }
 
 /*
@@ -863,12 +855,7 @@ void R_RenderView_(void) {
     }
 
     R_SetupFrame();
-
-#ifdef PASSAGES
-    SetVisibilityByPassages ();
-#else
     R_MarkLeaves();    // done here so we know if we're in water
-#endif
 
 // make FDIV fast. This reduces timing precision after we've been running for a
 // while, so we don't do it globally.  This also sets chop mode, and we do it
