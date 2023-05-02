@@ -1000,17 +1000,17 @@ void Host_Say(qboolean teamonly) {
 
 // turn on color set 1
     if(!fromServer)
-        sprintf (text, "%c%s: ", 1, save->name);
+        sprintf((char*)text, "%c%s: ", 1, save->name);
     else
-        sprintf (text, "%c<%s> ", 1, hostname.string);
+        sprintf((char*)text, "%c<%s> ", 1, hostname.string);
 
-    j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
+    j = sizeof(text) - 2 - Q_strlen((char*)text);  // -2 for /n and null terminator
     if(Q_strlen(p) > j) {
         p[j] = 0;
     }
 
-    strcat (text, p);
-    strcat (text, "\n");
+    strcat((char*)text, p);
+    strcat((char*)text, "\n");
 
     for(j = 0, client = svs.clients; j < svs.maxclients; j++, client++) {
         if(!client || !client->active || !client->spawned) {
@@ -1447,7 +1447,7 @@ Host_Give_f
 */
 void Host_Give_f(void) {
     char *t;
-    int v, w;
+    int v;
     eval_t *val;
 
     if(cmd_source == src_command) {

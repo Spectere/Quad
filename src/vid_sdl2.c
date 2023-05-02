@@ -97,12 +97,9 @@ void VID_SetPalette(unsigned char *palette) {
     unsigned int r, g, b;
     unsigned int v;
     int r1, g1, b1;
-    int j, k, l, m;
+    int j, k, l;
     unsigned short i;
     unsigned int *table;
-    FILE *f;
-    char s[255];
-    float gamma;
 
 //
 // 8 8 8 encoding

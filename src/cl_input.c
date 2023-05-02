@@ -65,20 +65,22 @@ void KeyDown(kbutton_t *b) {
         k = -1;
     }        // typed manually at the console for continuous down
 
-    if(k == b->down[0] || k == b->down[1])
-        return;        // repeating key
+    if(k == b->down[0] || k == b->down[1]) {
+        return;
+    }        // repeating key
 
-    if(!b->down[0])
+    if(!b->down[0]) {
         b->down[0] = k;
-    else if(!b->down[1])
+    } else if(!b->down[1]) {
         b->down[1] = k;
-    else {
+    } else {
         Con_Printf("Three keys down for a button!\n");
         return;
     }
 
-    if(b->state & 1)
-        return;        // still down
+    if(b->state & 1) {
+        return;
+    }        // still down
     b->state |= 1 + 2;    // down + impulse down
 }
 
@@ -102,11 +104,13 @@ void KeyUp(kbutton_t *b) {
     } else {
         return;
     }        // key up without coresponding down (menu pass through)
-    if(b->down[0] || b->down[1])
-        return;        // some other key is still holding it down
+    if(b->down[0] || b->down[1]) {
+        return;
+    }        // some other key is still holding it down
 
-    if(!(b->state & 1))
-        return;        // still up (this should not happen)
+    if(!(b->state & 1)) {
+        return;
+    }        // still up (this should not happen)
     b->state &= ~1;        // now up
     b->state |= 4;        // impulse up
 }
@@ -212,21 +216,27 @@ float CL_KeyState(kbutton_t *key) {
             val = 0;
         }
     }    //	I_Error ();
-    if(impulseup && !impulsedown)
-        if(down)
+    if(impulseup && !impulsedown) {
+        if(down) {
             val = 0;    //	I_Error ();
-        else
-            val = 0;    // released this frame
-    if(!impulsedown && !impulseup)
-        if(down)
+        } else {
+            val = 0;
+        }
+    }    // released this frame
+    if(!impulsedown && !impulseup) {
+        if(down) {
             val = 1.0;    // held the entire frame
-        else
-            val = 0;    // up the entire frame
-    if(impulsedown && impulseup)
-        if(down)
+        } else {
+            val = 0;
+        }
+    }    // up the entire frame
+    if(impulsedown && impulseup) {
+        if(down) {
             val = 0.75;    // released and re-pressed this frame
-        else
-            val = 0.25;    // pressed and released this frame
+        } else {
+            val = 0.25;
+        }
+    }    // pressed and released this frame
 
     key->state &= 1;        // clear impulses
 

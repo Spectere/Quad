@@ -236,8 +236,6 @@ int main(int argc, char** argv) {
         printf("Quad -- Version %0.2f\n", QUAD_VERSION);
     }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
     time_prev = Sys_FloatTime() - 0.1;
     while(1) {
         time_now = Sys_FloatTime();
@@ -261,5 +259,4 @@ int main(int argc, char** argv) {
         Host_Frame(time);
         SDL_Delay(1);
     }
-#pragma clang diagnostic pop
 }

@@ -210,7 +210,7 @@ void SV_SendServerinfo(client_t *client) {
         MSG_WriteByte(&client->message, GAME_COOP);
     }
 
-    sprintf (message, pr_strings + sv.edicts->v.message);
+    sprintf(message, "%s", pr_strings + sv.edicts->v.message);
 
     MSG_WriteString(&client->message, message);
 
@@ -983,7 +983,7 @@ void SV_SendReconnect(void) {
     char data[128];
     sizebuf_t msg;
 
-    msg.data = data;
+    msg.data = (byte*)data;
     msg.cursize = 0;
     msg.maxsize = sizeof(data);
 

@@ -123,7 +123,7 @@ void D_FlushCaches(void) {
 D_SCAlloc
 =================
 */
-surfcache_t *D_SCAlloc(int width, int size) {
+surfcache_t *D_SCAlloc(int width, size_t size) {
     surfcache_t *new;
     qboolean wrapped_this_time;
 
@@ -135,7 +135,7 @@ surfcache_t *D_SCAlloc(int width, int size) {
         Sys_Error("D_SCAlloc: bad cache size %d\n", size);
     }
 
-    size = (int)&((surfcache_t *)0)->data[size];
+    size = (size_t)&((surfcache_t *)0)->data[size];
     size = (size + 3) & ~3;
     if(size > sc_size) {
         Sys_Error("D_SCAlloc: %i > cache size", size);

@@ -129,7 +129,7 @@ include_directories(${SDL2_INCLUDE_DIRS})
 link_libraries(${SDL2_LIBRARIES})
 
 # Common compiler settings.
-add_compile_options(-Wall)
+add_compile_options(-Wall -Werror)
 
 ###                     ################################################################################################
 ###  SOFTWARE RENDERER  ################################################################################################
