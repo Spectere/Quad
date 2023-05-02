@@ -77,8 +77,9 @@ void R_AddDynamicLights(void) {
         dist = DotProduct (cl_dlights[lnum].origin, surf->plane->normal) - surf->plane->dist;
         rad -= fabs(dist);
         minlight = cl_dlights[lnum].minlight;
-        if(rad < minlight)
+        if(rad < minlight) {
             continue;
+        }
         minlight = rad - minlight;
 
         for(i = 0; i < 3; i++) {
@@ -93,35 +94,22 @@ void R_AddDynamicLights(void) {
 
         for(t = 0; t < tmax; t++) {
             td = local[1] - t * 16;
-            if(td < 0)
+            if(td < 0) {
                 td = -td;
+            }
             for(s = 0; s < smax; s++) {
                 sd = local[0] - s * 16;
-                if(sd < 0)
+                if(sd < 0) {
                     sd = -sd;
-                if(sd > td)
+                }
+                if(sd > td) {
                     dist = sd + (td >> 1);
-                else
+                } else {
                     dist = td + (sd >> 1);
-                if(dist < minlight)
-#ifdef QUAKE2
-                    {
-                        unsigned temp;
-                        temp = (rad - dist)*256;
-                        i = t*smax + s;
-                        if (!cl_dlights[lnum].dark)
-                            blocklights[i] += temp;
-                        else
-                        {
-                            if (blocklights[i] > temp)
-                                blocklights[i] -= temp;
-                            else
-                                blocklights[i] = 0;
-                        }
-                    }
-#else
+                }
+                if(dist < minlight) {
                     blocklights[t * smax + s] += (rad - dist) * 256;
-#endif
+                }
             }
         }
     }
