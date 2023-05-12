@@ -287,7 +287,6 @@ void VID_Shutdown(void) {
     }
 
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
-    SDL_Quit();  // TODO: Move this to something like sys_sdl2.c when appropriate.
 }
 
 int VID_SetMode(int modenum, unsigned char *palette) {

@@ -857,28 +857,18 @@ void R_RenderView_(void) {
     R_SetupFrame();
     R_MarkLeaves();    // done here so we know if we're in water
 
-// make FDIV fast. This reduces timing precision after we've been running for a
-// while, so we don't do it globally.  This also sets chop mode, and we do it
-// here so that setup stuff like the refresh area calculations match what's
-// done in screen.c
-    Sys_LowFPPrecision();
-
     if(!cl_entities[0].model || !cl.worldmodel) {
         Sys_Error("R_RenderView: NULL worldmodel");
     }
 
     if(!r_dspeeds.value) {
-        VID_UnlockBuffer ();
         S_ExtraUpdate();    // don't let sound get messed up if going slow
-        VID_LockBuffer ();
     }
 
     R_EdgeDrawing();
 
     if(!r_dspeeds.value) {
-        VID_UnlockBuffer ();
         S_ExtraUpdate();    // don't let sound get messed up if going slow
-        VID_LockBuffer ();
     }
 
     if(r_dspeeds.value) {
@@ -935,9 +925,6 @@ void R_RenderView_(void) {
     if(r_reportedgeout.value && r_outofedges) {
         Con_Printf("Short roughly %d edges\n", r_outofedges * 2 / 3);
     }
-
-// back to high floating-point precision
-    Sys_HighFPPrecision();
 }
 
 void R_RenderView(void) {

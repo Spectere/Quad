@@ -96,8 +96,6 @@ void Sys_mkdir (char *path) {
     mkdir(path, 0777);
 }
 
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length) {}
-
 void Sys_Error (char *error, ...) {
     va_list argptr;
     char string[1024];
@@ -193,12 +191,6 @@ char *Sys_ConsoleInput (void) {  // TODO: Might have to rework this for Win32 (d
 
     return NULL;
 }
-
-void Sys_LowFPPrecision (void) {}  // TODO: i386 cruft. Remove.
-
-void Sys_HighFPPrecision (void) {} // TODO: i386 cruft. Remove.
-
-void Sys_SetFPCW (void) {}
 
 /*
  * Entrypoint
