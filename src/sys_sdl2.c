@@ -37,7 +37,7 @@ char *basedir = ".";
 qboolean isDedicated = false;
 int no_stdout = 0;
 
-int Sys_FileOpenRead (char *path, int *handle) {
+int Sys_FileOpenRead(char *path, int *handle) {
     int	h;
     struct stat	fileinfo;
 
@@ -53,7 +53,7 @@ int Sys_FileOpenRead (char *path, int *handle) {
     return fileinfo.st_size;
 }
 
-int Sys_FileOpenWrite (char *path) {
+int Sys_FileOpenWrite(char *path) {
     int handle;
 
     umask(0);
@@ -67,23 +67,23 @@ int Sys_FileOpenWrite (char *path) {
     return handle;
 }
 
-void Sys_FileClose (int handle) {
+void Sys_FileClose(int handle) {
     close(handle);
 }
 
-void Sys_FileSeek (int handle, int position) {
+void Sys_FileSeek(int handle, int position) {
     lseek(handle, position, SEEK_SET);
 }
 
-int Sys_FileRead (int handle, void *dest, int count) {
+int Sys_FileRead(int handle, void *dest, int count) {
     return read(handle, dest, count);
 }
 
-int Sys_FileWrite (int handle, void *data, int count) {
+int Sys_FileWrite(int handle, void *data, int count) {
     return write(handle, data, count);
 }
 
-int	Sys_FileTime (char *path) {
+int	Sys_FileTime(char *path) {
     struct stat buf;
 
     if(stat(path, &buf) == -1)
@@ -92,11 +92,11 @@ int	Sys_FileTime (char *path) {
     return buf.st_mtime;
 }
 
-void Sys_mkdir (char *path) {
+void Sys_mkdir(char *path) {
     mkdir(path, 0777);
 }
 
-void Sys_Error (char *error, ...) {
+void Sys_Error(char *error, ...) {
     va_list argptr;
     char string[1024];
 
@@ -109,7 +109,7 @@ void Sys_Error (char *error, ...) {
     exit(1);
 }
 
-void Sys_Printf (char *fmt, ...) {
+void Sys_Printf(char *fmt, ...) {
     va_list argptr;
     char text[MAXPRINTMSG];
     unsigned char *p;
@@ -137,14 +137,14 @@ void Sys_Printf (char *fmt, ...) {
     }
 }
 
-void Sys_Quit (void) {
+void Sys_Quit(void) {
     Host_Shutdown();
     fflush(stdout);
     SDL_Quit();
     exit(0);
 }
 
-double Sys_FloatTime (void) {
+double Sys_FloatTime(void) {
 #ifdef POSIX
     // POSIX-y time implementation.
     struct timeval tp;
@@ -165,7 +165,7 @@ double Sys_FloatTime (void) {
 #endif // POSIX
 }
 
-char *Sys_ConsoleInput (void) {  // TODO: Might have to rework this for Win32 (does it have unistd.h?)
+char *Sys_ConsoleInput(void) {  // TODO: Might have to rework this for Win32 (does it have unistd.h?)
     static char text[256];
     long len;
     fd_set fdset;
