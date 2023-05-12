@@ -195,17 +195,6 @@ extern const char *gl_extensions;
 void R_TranslatePlayerSkin(int playernum);
 void GL_Bind(int texnum);
 
-// Multitexture
-#define    TEXTURE0_SGIS                0x835E
-#define    TEXTURE1_SGIS                0x835F
-
-typedef void (*lpMTexFUNC)(GLenum, GLfloat, GLfloat);
-typedef void (*lpSelTexFUNC)(GLenum);
-extern lpMTexFUNC qglMTexCoord2fSGIS;
-extern lpSelTexFUNC qglSelectTextureSGIS;
-
-extern qboolean gl_mtexable;
-
 void GL_DisableMultitexture(void);
 void GL_EnableMultitexture(void);
 

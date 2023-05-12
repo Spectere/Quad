@@ -178,9 +178,7 @@ void R_Init(void) {
     Cvar_RegisterVariable(&gl_clear);
     Cvar_RegisterVariable(&gl_texsort);
 
-    if(gl_mtexable) {
-        Cvar_SetValue("gl_texsort", 0.0);
-    }
+    Cvar_SetValue("gl_texsort", 0.0);
 
     Cvar_RegisterVariable(&gl_cull);
     Cvar_RegisterVariable(&gl_smoothmodels);

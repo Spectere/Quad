@@ -37,7 +37,6 @@ unsigned char d_15to8table[65536];
 qboolean DDActive;
 qboolean scr_skipupdate;
 qboolean isPermedia = false;
-qboolean gl_mtexable = false;
 float gldepthmin, gldepthmax;
 int texture_extension_number = 1;
 cvar_t gl_ztrick = {"gl_ztrick", "1"};
@@ -177,16 +176,23 @@ void VID_Init(unsigned char *palette) {
     VID_SetPalette(palette);
 
     gl_vendor = (char*)glGetString (GL_VENDOR);
-    Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
+    Con_Printf("GL_VENDOR: %s\n", gl_vendor);
     gl_renderer = (char*)glGetString (GL_RENDERER);
-    Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
+    Con_Printf("GL_RENDERER: %s\n", gl_renderer);
 
     gl_version = (char*)glGetString (GL_VERSION);
-    Con_Printf ("GL_VERSION: %s\n", gl_version);
+    Con_Printf("GL_VERSION: %s\n", gl_version);
     gl_extensions = (char*)glGetString (GL_EXTENSIONS);
     // Don't print the GL extensions. Modern GPUs support way too many of them.
 
-    //gl_mtexable = true;
+    GLint gl_mtex_units;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &gl_mtex_units);
+    Con_Printf("GL_MAX_TEXTURE_UNITS: %i\n", gl_mtex_units);
+
+    if(gl_mtex_units < 2) {
+        VID_Shutdown();
+        Sys_Error("QuadGL requires a graphics card with multitexturing support.\n");
+    }
 
     glClearColor (1,0,0,0);
     glCullFace(GL_FRONT);
