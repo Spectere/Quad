@@ -42,7 +42,6 @@ unsigned blocklights[18 * 18];
 #define    BLOCK_HEIGHT    128
 
 #define    MAX_LIGHTMAPS    64
-int active_lightmaps;
 
 typedef struct glRect_s {
     unsigned char l, t, w, h;
@@ -1323,7 +1322,6 @@ void GL_BuildLightmaps(void) {
     }
 
     gl_lightmap_format = GL_LUMINANCE;
-    // default differently on the Permedia
 
     if(COM_CheckParm("-lm_1")) {
         gl_lightmap_format = GL_LUMINANCE;

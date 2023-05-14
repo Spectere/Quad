@@ -75,13 +75,9 @@ extern cvar_t r_numedges;
 #define XCENTERING    (1.0 / 2.0)
 #define YCENTERING    (1.0 / 2.0)
 
-#define CLIP_EPSILON        0.001
-
 #define BACKFACE_EPSILON    0.01
 
 //===========================================================================
-
-#define    DIST_NOT_SET    98765
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct clipplane_s {
@@ -123,27 +119,17 @@ extern int c_faceclip;
 extern int r_polycount;
 extern int r_wholepolycount;
 
-extern model_t *cl_worldmodel;
-
 extern int *pfrustum_indexes[4];
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 #define    NEAR_CLIP    0.01
 
 extern int ubasestep, errorterm, erroradjustup, erroradjustdown;
-extern int vstartscan;
 
 extern fixed16_t sadjust, tadjust;
 extern fixed16_t bbextents, bbextentt;
 
-#define MAXBVERTINDEXES    1000    // new clipped vertices when clipping bmodels
-//  to the world BSP
-extern mvertex_t *r_ptverts, *r_ptvertsmax;
-
-extern vec3_t sbaseaxis[3], tbaseaxis[3];
 extern float entity_rotation[3][3];
-
-extern int reinit_surfcache;
 
 extern int r_currentkey;
 extern int r_currentbkey;
@@ -167,12 +153,8 @@ extern btofpoly_t *pbtofpolys;
 
 extern int numverts;
 extern int a_skinwidth;
-extern mtriangle_t *ptriangles;
-extern int numtriangles;
 extern aliashdr_t *paliashdr;
 extern mdl_t *pmdl;
-extern float leftclip, topclip, rightclip, bottomclip;
-extern int r_acliptype;
 extern finalvert_t *pfinalverts;
 extern auxvert_t *pauxverts;
 
@@ -209,7 +191,6 @@ extern int r_outofsurfaces;
 extern int r_outofedges;
 
 extern mvertex_t *r_pcurrentvertbase;
-extern int r_maxvalidedgeoffset;
 
 extern float r_time1;
 extern float dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;

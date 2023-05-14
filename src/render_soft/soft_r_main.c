@@ -101,15 +101,8 @@ int r_polycount;
 int r_drawnpolycount;
 int r_wholepolycount;
 
-#define        VIEWMODNAME_LENGTH    256
-char viewmodname[VIEWMODNAME_LENGTH + 1];
-int modcount;
-
 int *pfrustum_indexes[4];
 int r_frustum_indexes[4 * 6];
-
-int reinit_surfcache = 1;    // if 1, surface cache is currently empty and
-// must be reinitialized for current cache size
 
 mleaf_t *r_viewleaf, *r_oldviewleaf;
 
@@ -822,10 +815,6 @@ void R_EdgeDrawing(void) {
         R_ScanEdges();
     }
 
-// only the world can be drawn back to front with no z reads or compares, just
-// z writes, so have the driver turn z compares on now
-    D_TurnZOn();
-
     if(r_dspeeds.value) {
         rw_time2 = Sys_FloatTime();
         db_time1 = rw_time2;
@@ -839,9 +828,7 @@ void R_EdgeDrawing(void) {
     }
 
     if(!r_dspeeds.value) {
-        VID_UnlockBuffer ();
         S_ExtraUpdate();    // don't let sound get messed up if going slow
-        VID_LockBuffer ();
     }
 
     if(!(r_drawpolys | r_drawculledpolys)) {

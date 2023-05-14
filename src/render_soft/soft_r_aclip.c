@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../quakedef.h"
 #include "soft_r_local.h"
-#include "soft_d_local.h"
 
 static finalvert_t fv[2][8];
 static auxvert_t av[8];

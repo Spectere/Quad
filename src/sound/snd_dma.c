@@ -21,10 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
-#endif
-
 void S_Play(void);
 void S_PlayVol(void);
 void S_SoundList(void);
@@ -94,15 +90,6 @@ cvar_t _snd_mixahead = { "_snd_mixahead", "0.1", true };
 //
 
 qboolean fakedma = false;
-int fakedma_updates = 15;
-
-void S_AmbientOff(void) {
-    snd_ambient = false;
-}
-
-void S_AmbientOn(void) {
-    snd_ambient = true;
-}
 
 void S_SoundInfo_f(void) {
     if(!sound_started || !shm) {

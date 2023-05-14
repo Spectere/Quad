@@ -87,19 +87,17 @@ set(SRC_COMMON
 
 set(SRC_RENDER_SOFT
                                         src/render_soft/soft_adivtab.h
-    src/render_soft/soft_d_edge.c
-    src/render_soft/soft_d_fill.c
+    src/render_soft/soft_d_edge.c       src/render_soft/soft_d_edge.h
     src/render_soft/soft_d_init.c
                                         src/render_soft/soft_d_local.h
     src/render_soft/soft_d_modech.c
     src/render_soft/soft_d_part.c
     src/render_soft/soft_d_polyse.c
     src/render_soft/soft_d_scan.c       src/render_soft/soft_d_scan.h
-    src/render_soft/soft_d_sky.c
-    src/render_soft/soft_d_sprite.c
-    src/render_soft/soft_d_surf.c
+    src/render_soft/soft_d_sky.c        src/render_soft/soft_d_sky.h
+    src/render_soft/soft_d_sprite.c     src/render_soft/soft_d_sprite.h
+    src/render_soft/soft_d_surf.c       src/render_soft/soft_d_surf.h
     src/render_soft/soft_d_vars.c
-    src/render_soft/soft_d_zpoint.c
     src/render_soft/soft_draw.c
     src/render_soft/soft_model.c        src/render_soft/soft_model.h
     src/render_soft/soft_r_aclip.c      src/render_soft/soft_r_aclip.h

@@ -24,12 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "soft_r_shared.h"
 
-//
-// TODO: fine-tune this; it's based on providing some overage even if there
-// is a 2k-wide scan, with subdivision every 8, for 256 spans of 12 bytes each
-//
-#define SCANBUFFERPAD        0x1000
-
 #define R_SKY_SMASK    0x007F0000
 #define R_SKY_TMASK    0x007F0000
 
@@ -70,21 +64,9 @@ extern float d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 fixed16_t sadjust, tadjust;
 fixed16_t bbextents, bbextentt;
 
-void D_SpriteDrawSpans(sspan_t *pspan);
-
-void D_DrawSkyScans8(espan_t *pspan);
-void D_DrawSkyScans16(espan_t *pspan);
-
-void R_ShowSubDiv(void);
-void (*prealspandrawer)(void);
-surfcache_t *D_CacheSurface(msurface_t *surface, int miplevel);
-
-extern int D_MipLevelForScale(float scale);
-
 extern short *d_pzbuffer;
 extern unsigned int d_zrowbytes, d_zwidth;
 
-extern int *d_pscantable;
 extern int d_scantable[MAXHEIGHT];
 
 extern int d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
@@ -97,7 +79,5 @@ extern short *zspantable[MAXHEIGHT];
 
 extern int d_minmip;
 extern float d_scalemip[3];
-
-extern void (*d_drawspans)(espan_t *pspan);
 
 #endif // !RENDER_SOFT_D_LOCAL

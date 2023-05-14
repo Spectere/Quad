@@ -21,15 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../quakedef.h"
 #include "soft_r_local.h"
-#include "soft_r_sky.h"
 #include "soft_r_surf.h"
 
 drawsurf_t r_drawsurf;
 
 int lightleft, sourcesstep, blocksize, sourcetstep;
-int lightdelta, lightdeltastep;
 int lightright, lightleftstep, lightrightstep, blockdivshift;
-unsigned blockdivmask;
+unsigned int blockdivmask;
 void *prowdestbase;
 unsigned char *pbasesource;
 int surfrowbytes;    // used by ASM files
@@ -44,8 +42,7 @@ void R_DrawSurfaceBlock8_mip1(void);
 void R_DrawSurfaceBlock8_mip2(void);
 void R_DrawSurfaceBlock8_mip3(void);
 
-static void (*surfmiptable[4])(void) = { R_DrawSurfaceBlock8_mip0, R_DrawSurfaceBlock8_mip1, R_DrawSurfaceBlock8_mip2,
-        R_DrawSurfaceBlock8_mip3 };
+static void (*surfmiptable[4])(void) = { R_DrawSurfaceBlock8_mip0, R_DrawSurfaceBlock8_mip1, R_DrawSurfaceBlock8_mip2, R_DrawSurfaceBlock8_mip3 };
 
 unsigned blocklights[18 * 18];
 
@@ -576,27 +573,3 @@ void R_GenTurbTile16(pixel_t *pbasetex, void *pdest) {
         }
     }
 }
-
-/*
-================
-R_GenTile
-================
-*/
-void R_GenTile(msurface_t *psurf, void *pdest) {
-    if(psurf->flags & SURF_DRAWTURB) {
-        if(r_pixbytes == 1) {
-            R_GenTurbTile((pixel_t *)((byte *)psurf->texinfo->texture + psurf->texinfo->texture->offsets[0]), pdest);
-        } else {
-            R_GenTurbTile16((pixel_t *)((byte *)psurf->texinfo->texture + psurf->texinfo->texture->offsets[0]), pdest);
-        }
-    } else if(psurf->flags & SURF_DRAWSKY) {
-        if(r_pixbytes == 1) {
-            R_GenSkyTile(pdest);
-        } else {
-            R_GenSkyTile16(pdest);
-        }
-    } else {
-        Sys_Error("Unknown tile type");
-    }
-}
-

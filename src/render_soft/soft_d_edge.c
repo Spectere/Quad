@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../quakedef.h"
 #include "soft_d_local.h"
 #include "soft_d_scan.h"
+#include "soft_d_sky.h"
+#include "soft_d_surf.h"
 #include "soft_r_bsp.h"
 #include "soft_r_misc.h"
 
@@ -30,7 +32,6 @@ static int miplevel;
 float scale_for_mip;
 int screenwidth;
 int ubasestep, errorterm, erroradjustup, erroradjustdown;
-int vstartscan;
 
 vec3_t transformed_modelorg;
 
@@ -253,13 +254,13 @@ void D_DrawSurfaces(void) {
                 if(s->insubmodel) {
                     // FIXME: we don't want to do all this for every polygon!
                     // TODO: store once at start of frame
-                    currententity = s->entity;    //FIXME: make this passed in to
-                    // R_RotateBmodel ()
+                    currententity = s->entity;    // FIXME: make this passed in to
+                                                  // R_RotateBmodel ()
                     VectorSubtract (r_origin, currententity->origin, local_modelorg);
                     TransformVector(local_modelorg, transformed_modelorg);
 
                     R_RotateBmodel();    // FIXME: don't mess with the frustum,
-                    // make entity passed in
+                                         // make entity passed in
                 }
 
                 pface = s->data;
@@ -272,9 +273,7 @@ void D_DrawSurfaces(void) {
                 cachewidth = pcurrentcache->width;
 
                 D_CalcGradients(pface);
-
-                (*d_drawspans)(s->spans);
-
+                D_DrawSpans8(s->spans);
                 D_DrawZSpans(s->spans);
 
                 if(s->insubmodel) {
@@ -284,11 +283,11 @@ void D_DrawSurfaces(void) {
                     // TODO: speed up
                     //
                     currententity = &cl_entities[0];
-                    VectorCopy (world_transformed_modelorg, transformed_modelorg);
-                    VectorCopy (base_vpn, vpn);
-                    VectorCopy (base_vup, vup);
-                    VectorCopy (base_vright, vright);
-                    VectorCopy (base_modelorg, modelorg);
+                    VectorCopy(world_transformed_modelorg, transformed_modelorg);
+                    VectorCopy(base_vpn, vpn);
+                    VectorCopy(base_vup, vup);
+                    VectorCopy(base_vright, vright);
+                    VectorCopy(base_modelorg, modelorg);
                     R_TransformFrustum();
                 }
             }

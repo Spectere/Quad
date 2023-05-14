@@ -36,12 +36,6 @@ extern int texture_mode;
 
 extern float gldepthmin, gldepthmax;
 
-typedef struct {
-    float x, y, z;
-    float s, t;
-    float r, g, b;
-} glvert_t;
-
 extern int glx, gly, glwidth, glheight;
 
 // r_local.h -- private refresh defs
@@ -138,7 +132,6 @@ extern int skytexturenum;        // index in cl.loadmodel, not gl texture object
 
 extern cvar_t r_norefresh;
 extern cvar_t r_drawentities;
-extern cvar_t r_drawworld;
 extern cvar_t r_drawviewmodel;
 extern cvar_t r_speeds;
 extern cvar_t r_waterwarp;
@@ -152,7 +145,6 @@ extern cvar_t r_novis;
 
 extern cvar_t gl_clear;
 extern cvar_t gl_cull;
-extern cvar_t gl_poly;
 extern cvar_t gl_texsort;
 extern cvar_t gl_smoothmodels;
 extern cvar_t gl_affinemodels;

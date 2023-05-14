@@ -42,18 +42,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <setjmp.h>
 
-#if defined(_WIN32) && !defined(WINDED)
-
-void	VID_LockBuffer (void);
-void	VID_UnlockBuffer (void);
-
-#else
-
-#define VID_LockBuffer()
-#define VID_UnlockBuffer()
-
-#endif
-
 #define UNALIGNED_OK    0
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!

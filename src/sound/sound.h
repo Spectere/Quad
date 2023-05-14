@@ -96,11 +96,9 @@ void S_ExtraUpdate(void);
 
 sfx_t *S_PrecacheSound(char *sample);
 void S_TouchSound(char *sample);
-void S_ClearPrecache(void);
 void S_BeginPrecaching(void);
 void S_EndPrecaching(void);
 void S_PaintChannels(int endtime);
-void S_InitPaintChannels(void);
 
 // picks a channel based on priorities, empty slots, number of channels
 channel_t *SND_PickChannel(int entnum, int entchannel);
@@ -138,7 +136,6 @@ extern int total_channels;
 //
 
 extern qboolean fakedma;
-extern int fakedma_updates;
 extern int paintedtime;
 extern vec3_t listener_origin;
 extern vec3_t listener_forward;
@@ -163,8 +160,5 @@ wavinfo_t GetWavinfo(char *name, byte *wav, int wavlength);
 
 void SND_InitScaletable(void);
 void SNDDMA_Submit(void);
-
-void S_AmbientOff(void);
-void S_AmbientOn(void);
 
 #endif

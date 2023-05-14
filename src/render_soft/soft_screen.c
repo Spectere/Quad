@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
 #include "../quakedef.h"
-#include "soft_r_local.h"
 
 // only the refresh window will be updated unless these variables are flagged 
 int scr_copytop;
@@ -613,16 +612,10 @@ void SCR_ScreenShot_f(void) {
         return;
     }
 
-// 
-// save the pcx file 
-// 
-    D_EnableBackBufferAccess();    // enable direct drawing of console to back
-    //  buffer
-
+    //
+    // save the pcx file
+    //
     WritePCXfile(pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes, host_basepal);
-
-    D_DisableBackBufferAccess();    // for adapters that can't stay mapped in
-    //  for linear writes all the time
 
     Con_Printf("Wrote %s\n", pcxname);
 }
@@ -753,26 +746,6 @@ int SCR_ModalMessage(char *text) {
 //=============================================================================
 
 /*
-===============
-SCR_BringDownConsole
-
-Brings the console down and fades the palettes back to normal
-================
-*/
-void SCR_BringDownConsole(void) {
-    int i;
-
-    scr_centertime_off = 0;
-
-    for(i = 0; i < 20 && scr_conlines != scr_con_current; i++) {
-        SCR_UpdateScreen();
-    }
-
-    cl.cshifts[0].percent = 0;        // no area contents palette on next frame
-    VID_SetPalette(host_basepal);
-}
-
-/*
 ==================
 SCR_UpdateScreen
 
@@ -842,8 +815,6 @@ void SCR_UpdateScreen(void) {
 //
 // do 3D refresh drawing, and then update the screen
 //
-    D_EnableBackBufferAccess();    // of all overlay stuff if drawing directly
-
     if(scr_fullupdate++ < vid.numpages) {    // clear the entire screen
         scr_copyeverything = 1;
         Draw_TileClear(0, 0, vid.width, vid.height);
@@ -855,16 +826,7 @@ void SCR_UpdateScreen(void) {
     SCR_SetUpToDrawConsole();
     SCR_EraseCenterString();
 
-    D_DisableBackBufferAccess();    // for adapters that can't stay mapped in
-    //  for linear writes all the time
-
-    VID_LockBuffer ();
-
     V_RenderView();
-
-    VID_UnlockBuffer ();
-
-    D_EnableBackBufferAccess();    // of all overlay stuff if drawing directly
 
     if(scr_drawdialog) {
         Sbar_Draw();
@@ -892,8 +854,6 @@ void SCR_UpdateScreen(void) {
         M_Draw();
     }
 
-    D_DisableBackBufferAccess();    // for adapters that can't stay mapped in
-    //  for linear writes all the time
     if(pconupdate) {
         D_UpdateRects(pconupdate);
     }
@@ -929,14 +889,4 @@ void SCR_UpdateScreen(void) {
 
         VID_Update(&vrect);
     }
-}
-
-/*
-==================
-SCR_UpdateWholeScreen
-==================
-*/
-void SCR_UpdateWholeScreen(void) {
-    scr_fullupdate = 0;
-    SCR_UpdateScreen();
 }

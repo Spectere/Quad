@@ -219,48 +219,6 @@ void Draw_String(int x, int y, char *str) {
 }
 
 /*
-================
-Draw_DebugChar
-
-Draws a single character directly to the upper right corner of the screen.
-This is for debugging lockups by drawing different chars in different parts
-of the code.
-================
-*/
-void Draw_DebugChar(char num) {
-    byte *dest;
-    byte *source;
-    int drawline;
-    extern byte *draw_chars;
-    int row, col;
-
-    if(!vid.direct) {
-        return;
-    }        // don't have direct FB access, so no debugchars...
-
-    drawline = 8;
-
-    row = num >> 4;
-    col = num & 15;
-    source = draw_chars + (row << 10) + (col << 3);
-
-    dest = vid.direct + 312;
-
-    while(drawline--) {
-        dest[0] = source[0];
-        dest[1] = source[1];
-        dest[2] = source[2];
-        dest[3] = source[3];
-        dest[4] = source[4];
-        dest[5] = source[5];
-        dest[6] = source[6];
-        dest[7] = source[7];
-        source += 128;
-        dest += 320;
-    }
-}
-
-/*
 =============
 Draw_Pic
 =============
@@ -753,9 +711,7 @@ void Draw_FadeScreen(void) {
     int x, y;
     byte *pbuf;
 
-    VID_UnlockBuffer ();
     S_ExtraUpdate();
-    VID_LockBuffer ();
 
     for(y = 0; y < vid.height; y++) {
         int t;
@@ -770,9 +726,7 @@ void Draw_FadeScreen(void) {
         }
     }
 
-    VID_UnlockBuffer ();
     S_ExtraUpdate();
-    VID_LockBuffer ();
 }
 
 //=============================================================================
