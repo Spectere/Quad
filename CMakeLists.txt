@@ -18,20 +18,20 @@ set(SRC_COMMON
                                         src/bspfile.h
     src/sound/cd_null.c
                                         src/sound/cdaudio.h
-    src/chase.c
+    src/chase.c                         src/chase.h
                                         src/client.h
-    src/cl_demo.c
-    src/cl_input.c
-    src/cl_main.c
-    src/cl_parse.c
-    src/cl_tent.c
+    src/cl_demo.c                       src/cl_demo.h
+    src/cl_input.c                      src/cl_input.h
+    src/cl_main.c                       src/cl_main.h
+    src/cl_parse.c                      src/cl_parse.h
+    src/cl_tent.c                       src/cl_tent.h
     src/cmd.c                           src/cmd.h
     src/common.c                        src/common.h
     src/console.c                       src/console.h
     src/crc.c                           src/crc.h
     src/cvar.c                          src/cvar.h
-    src/host.c
-    src/host_cmd.c
+    src/host.c                          src/host.h
+    src/host_cmd.c                      src/host_cmd.h
                                         src/input.h
     src/keys.c                          src/keys.h
     src/mathlib.c                       src/mathlib.h
@@ -44,8 +44,8 @@ set(SRC_COMMON
     src/net_vcr.c                       src/net_vcr.h
     src/pr_cmds.c
                                         src/pr_comp.h
-    src/pr_edict.c
-    src/pr_exec.c
+    src/pr_edict.c                      src/pr_edict.h
+    src/pr_exec.c                       src/pr_exec.h
                                         src/progdefs.h
                                         src/progdefs.q1
                                         src/progs.h
@@ -54,10 +54,10 @@ set(SRC_COMMON
     src/sbar.c                          src/sbar.h
                                         src/server.h
                                         src/spritegn.h
-    src/sv_main.c
-    src/sv_move.c
-    src/sv_phys.c
-    src/sv_user.c
+    src/sv_main.c                       src/sv_main.h
+    src/sv_move.c                       src/sv_move.h
+    src/sv_phys.c                       src/sv_phys.h
+    src/sv_user.c                       src/sv_user.h
                                         src/sys.h
     src/sys_sdl2.c                      src/sys_sdl2.h
                                         src/vid.h

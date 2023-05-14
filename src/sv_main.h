@@ -8,36 +8,31 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 */
-// view.h
 
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef SV_MAIN_H
+#define SV_MAIN_H
 
-extern cvar_t v_gamma;
+#include "common.h"
+#include "mathlib.h"
+#include "progs.h"
 
-extern byte gammatable[256];    // palette is sent through this
-extern byte ramps[3][256];
-extern float v_blend[4];
+void SV_CheckForNewClients(void);
+void SV_ClearDatagram(void);
+void SV_Init(void);
+int SV_ModelIndex(char *name);
+void SV_SaveSpawnparms();
+void SV_SendClientMessages(void);
+void SV_SpawnServer(char *server);
+void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
+void SV_StartSound(edict_t *entity, int channel, char *sample, int volume, float attenuation);
+void SV_WriteClientdataToMessage(edict_t *ent, sizebuf_t *msg);
 
-extern cvar_t lcd_x;
-
-void V_CalcBlend(void);
-float V_CalcRoll(vec3_t angles, vec3_t velocity);
-void V_Init(void);
-void V_ParseDamage(void);
-void V_RenderView(void);
-void V_SetContentsColor(int contents);
-void V_StartPitchDrift(void);
-void V_StopPitchDrift(void);
-void V_UpdatePalette(void);
-
-#endif // !VIEW_H
+#endif // !SV_MAIN_H

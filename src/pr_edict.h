@@ -8,36 +8,37 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 */
-// view.h
 
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef PR_EDICT_H
+#define PR_EDICT_H
 
-extern cvar_t v_gamma;
+#include <stdio.h>
 
-extern byte gammatable[256];    // palette is sent through this
-extern byte ramps[3][256];
-extern float v_blend[4];
+#include "progs.h"
 
-extern cvar_t lcd_x;
+edict_t *ED_Alloc(void);
+void ED_Free(edict_t *ed);
+void ED_LoadFromFile(char *data);
+char *ED_NewString(char *string);  // returns a copy of the string allocated from the server's string heap
+char *ED_ParseEdict(char *data, edict_t *ent);
+void ED_ParseGlobals(char *data);
+void ED_Print(edict_t *ed);
+void ED_PrintEdicts(void);
+void ED_PrintNum(int ent);
+void ED_Write(FILE *f, edict_t *ed);
+void ED_WriteGlobals(FILE *f);
 
-void V_CalcBlend(void);
-float V_CalcRoll(vec3_t angles, vec3_t velocity);
-void V_Init(void);
-void V_ParseDamage(void);
-void V_RenderView(void);
-void V_SetContentsColor(int contents);
-void V_StartPitchDrift(void);
-void V_StopPitchDrift(void);
-void V_UpdatePalette(void);
+eval_t *GetEdictFieldValue(edict_t *ed, char *field);
 
-#endif // !VIEW_H
+void PR_Init(void);
+void PR_LoadProgs(void);
+
+#endif // !PR_EDICT_H

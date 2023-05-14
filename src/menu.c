@@ -19,9 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
-#endif
+#include "cl_main.h"
+#include "host_cmd.h"
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);

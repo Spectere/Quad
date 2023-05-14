@@ -21,6 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "cl_demo.h"
+#include "cl_input.h"
+#include "cl_main.h"
+#include "cl_tent.h"
+#include "host.h"
+
 #ifdef RENDER_GL
 #include "render_gl/gl_r_misc.h"
 #endif // RENDER_GL

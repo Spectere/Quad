@@ -23,6 +23,9 @@
 
 #include "quakedef.h"
 
+#include "cl_input.h"
+#include "host_cmd.h"
+
 // A jumble of globals, locals, defines, and cvars, copied from gl_vidnt.c.
 // TODO: A lot has changed in the past few decades. Let's see how many of these we can axe.
 #define WARP_WIDTH		320

@@ -21,6 +21,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "chase.h"
+#include "cl_main.h"
+#include "host.h"
+#include "host_cmd.h"
+#include "pr_edict.h"
+#include "pr_exec.h"
+#include "sv_main.h"
+#include "sv_move.h"
+#include "sv_phys.h"
+
 /*
 
 A server can allways be started, even if the system started out as a client

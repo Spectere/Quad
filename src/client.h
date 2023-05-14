@@ -22,6 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "mathlib.h"
+
+// Required for quakedef.h -> server.h
 typedef struct {
     vec3_t viewangles;
 
@@ -30,6 +33,8 @@ typedef struct {
     float sidemove;
     float upmove;
 } usercmd_t;
+
+#include "quakedef.h"
 
 typedef struct {
     int length;
@@ -248,8 +253,8 @@ extern cvar_t m_yaw;
 extern cvar_t m_forward;
 extern cvar_t m_side;
 
-#define    MAX_TEMP_ENTITIES    64            // lightning bolts, etc
-#define    MAX_STATIC_ENTITIES    128            // torches, etc
+#define MAX_TEMP_ENTITIES       64    // lightning bolts, etc
+#define MAX_STATIC_ENTITIES    128    // torches, etc
 
 extern client_state_t cl;
 
@@ -261,92 +266,5 @@ extern lightstyle_t cl_lightstyle[MAX_LIGHTSTYLES];
 extern dlight_t cl_dlights[MAX_DLIGHTS];
 extern entity_t cl_temp_entities[MAX_TEMP_ENTITIES];
 extern beam_t cl_beams[MAX_BEAMS];
-
-//=============================================================================
-
-//
-// cl_main
-//
-dlight_t *CL_AllocDlight(int key);
-void CL_DecayLights(void);
-
-void CL_Init(void);
-
-void CL_EstablishConnection(char *host);
-void CL_Signon1(void);
-void CL_Signon2(void);
-void CL_Signon3(void);
-void CL_Signon4(void);
-
-void CL_Disconnect(void);
-void CL_Disconnect_f(void);
-void CL_NextDemo(void);
-
-#define            MAX_VISEDICTS    256
-extern int cl_numvisedicts;
-extern entity_t *cl_visedicts[MAX_VISEDICTS];
-
-//
-// cl_input
-//
-typedef struct {
-    int down[2];        // key nums holding it down
-    int state;            // low bit is down state
-} kbutton_t;
-
-extern kbutton_t in_mlook, in_klook;
-extern kbutton_t in_strafe;
-extern kbutton_t in_speed;
-
-void CL_InitInput(void);
-void CL_SendCmd(void);
-void CL_SendMove(usercmd_t *cmd);
-
-void CL_ParseTEnt(void);
-void CL_UpdateTEnts(void);
-
-void CL_ClearState(void);
-
-int CL_ReadFromServer(void);
-void CL_WriteToServer(usercmd_t *cmd);
-void CL_BaseMove(usercmd_t *cmd);
-
-float CL_KeyState(kbutton_t *key);
-char *Key_KeynumToString(int keynum);
-
-//
-// cl_demo.c
-//
-void CL_StopPlayback(void);
-int CL_GetMessage(void);
-
-void CL_Stop_f(void);
-void CL_Record_f(void);
-void CL_PlayDemo_f(void);
-void CL_TimeDemo_f(void);
-
-//
-// cl_parse.c
-//
-void CL_ParseServerMessage(void);
-void CL_NewTranslation(int slot);
-
-//
-// view
-//
-void V_StartPitchDrift(void);
-void V_StopPitchDrift(void);
-
-void V_RenderView(void);
-void V_UpdatePalette(void);
-void V_Register(void);
-void V_ParseDamage(void);
-void V_SetContentsColor(int contents);
-
-//
-// cl_tent
-//
-void CL_InitTEnts(void);
-void CL_SignonReply(void);
 
 #endif // !CLIENT_H

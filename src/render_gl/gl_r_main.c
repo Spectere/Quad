@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 
 #include "../quakedef.h"
+
+#include "../chase.h"
+#include "../cl_main.h"
 #include "gl_draw.h"
 #include "gl_r_light.h"
 #include "gl_r_main.h"

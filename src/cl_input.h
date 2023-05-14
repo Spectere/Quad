@@ -8,36 +8,32 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 */
-// view.h
 
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef CL_INPUT_H
+#define CL_INPUT_H
 
-extern cvar_t v_gamma;
+#include "cl_main.h"
 
-extern byte gammatable[256];    // palette is sent through this
-extern byte ramps[3][256];
-extern float v_blend[4];
+typedef struct {
+    int down[2];        // key nums holding it down
+    int state;            // low bit is down state
+} kbutton_t;
 
-extern cvar_t lcd_x;
+extern kbutton_t in_mlook, in_klook;
+extern kbutton_t in_strafe;
+extern kbutton_t in_speed;
 
-void V_CalcBlend(void);
-float V_CalcRoll(vec3_t angles, vec3_t velocity);
-void V_Init(void);
-void V_ParseDamage(void);
-void V_RenderView(void);
-void V_SetContentsColor(int contents);
-void V_StartPitchDrift(void);
-void V_StopPitchDrift(void);
-void V_UpdatePalette(void);
+void CL_BaseMove(usercmd_t *cmd);
+float CL_KeyState(kbutton_t *key);
+void CL_InitInput(void);
+void CL_SendMove(usercmd_t *cmd);
 
-#endif // !VIEW_H
+#endif // !CL_INPUT_H

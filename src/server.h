@@ -184,43 +184,4 @@ extern double host_time;
 
 extern edict_t *sv_player;
 
-//===========================================================
-
-void SV_Init(void);
-
-void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
-void SV_StartSound(edict_t *entity, int channel, char *sample, int volume, float attenuation);
-
-void SV_DropClient(qboolean crash);
-
-void SV_SendClientMessages(void);
-void SV_ClearDatagram(void);
-
-int SV_ModelIndex(char *name);
-
-void SV_SetIdealPitch(void);
-
-void SV_AddUpdates(void);
-
-void SV_ClientThink(void);
-void SV_AddClientToServer(struct qsocket_s *ret);
-
-void SV_ClientPrintf(char *fmt, ...);
-void SV_BroadcastPrintf(char *fmt, ...);
-
-void SV_Physics(void);
-
-qboolean SV_CheckBottom(edict_t *ent);
-qboolean SV_movestep(edict_t *ent, vec3_t move, qboolean relink);
-
-void SV_WriteClientdataToMessage(edict_t *ent, sizebuf_t *msg);
-
-void SV_MoveToGoal(void);
-
-void SV_CheckForNewClients(void);
-void SV_RunClients(void);
-void SV_SaveSpawnparms();
-
-void SV_SpawnServer(char *server);
-
 #endif // !SERVER_H

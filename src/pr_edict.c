@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "host.h"
+#include "pr_exec.h"
+
 dprograms_t *progs;
 dfunction_t *pr_functions;
 char *pr_strings;

@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/time.h>
 #endif
 
+#include "host.h"
+
 #define DEFAULT_HEAPSIZE (32 * 1024 * 1024)  // 32MiB
 
 char *basedir = ".";

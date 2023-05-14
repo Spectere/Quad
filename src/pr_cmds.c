@@ -20,6 +20,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "host.h"
+#include "pr_edict.h"
+#include "pr_exec.h"
+#include "sv_main.h"
+#include "sv_move.h"
+
 #define RETURN_EDICT(e) (((int *)pr_globals)[OFS_RETURN] = EDICT_TO_PROG(e))
 
 /*
@@ -527,17 +533,17 @@ void PF_sound(void) {
     char *sample;
     int channel;
     edict_t *entity;
-    int volume;
+    int snd_volume;
     float attenuation;
 
     entity = G_EDICT(OFS_PARM0);
     channel = G_FLOAT(OFS_PARM1);
     sample = G_STRING(OFS_PARM2);
-    volume = G_FLOAT(OFS_PARM3) * 255;
+    snd_volume = G_FLOAT(OFS_PARM3) * 255;
     attenuation = G_FLOAT(OFS_PARM4);
 
-    if(volume < 0 || volume > 255) {
-        Sys_Error("SV_StartSound: volume = %i", volume);
+    if(snd_volume < 0 || snd_volume > 255) {
+        Sys_Error("SV_StartSound: volume = %i", snd_volume);
     }
 
     if(attenuation < 0 || attenuation > 4) {
@@ -548,7 +554,7 @@ void PF_sound(void) {
         Sys_Error("SV_StartSound: channel = %i", channel);
     }
 
-    SV_StartSound(entity, channel, sample, volume, attenuation);
+    SV_StartSound(entity, channel, sample, snd_volume, attenuation);
 }
 
 /*
@@ -1369,8 +1375,6 @@ void PF_WriteEntity(void) {
 }
 
 //=============================================================================
-
-int SV_ModelIndex(char *name);
 
 void PF_makestatic(void) {
     edict_t *ent;

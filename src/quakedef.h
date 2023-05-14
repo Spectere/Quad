@@ -22,16 +22,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef QUAKEDEF_H
 #define QUAKEDEF_H
 
-//#define	GLTEST			// experimental stuff
-
 #define QUAKE_GAME            // as opposed to utilities
 
 #define VERSION             1.09
 #define QUAD_VERSION        0.01
 
 #define MAXPRINTMSG    4096
-
-//define	PARANOID			// speed sapping error checking
 
 #define GAMENAME    "id1"
 
@@ -175,10 +171,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define SOUND_CHANNELS        8
 
-// This makes anyone on id's net privileged
-// Use for multiplayer testing only - VERY dangerous!!!
-// #define IDGODS
-
 #include "common.h"
 #include "bspfile.h"
 #include "vid.h"
@@ -261,56 +253,23 @@ extern cvar_t sys_ticrate;
 extern cvar_t sys_nostdout;
 extern cvar_t developer;
 
-extern qboolean host_initialized;        // true if into command execution
+extern qboolean host_initialized;    // true if into command execution
 extern double host_frametime;
 extern byte *host_basepal;
 extern byte *host_colormap;
-extern int host_framecount;    // incremented every frame, never reset
-extern double realtime;            // not bounded in any way, changed at
-// start of every frame, never reset
+extern int host_framecount;          // incremented every frame, never reset
+extern double realtime;              // not bounded in any way, changed at
+                                     // start of every frame, never reset
 
-void Host_ClearMemory(void);
-void Host_ServerFrame(void);
-void Host_InitCommands(void);
-void Host_Init(quakeparms_t *parms);
-void Host_Shutdown(void);
-void Host_Error(char *error, ...);
-void Host_EndGame(char *message, ...);
-void Host_Frame(float time);
-void Host_Quit_f(void);
-void Host_ClientCommands(char *fmt, ...);
-void Host_ShutdownServer(qboolean crash);
 
-extern qboolean msg_suppress_1;        // suppresses resolution and cache size console output
-//  an fullscreen DIB focus gain/loss
-extern int current_skill;        // skill level for currently loaded level (in case
-//  the user changes the cvar while the level is
-//  running, this reflects the level actually in use)
+extern qboolean msg_suppress_1;      // suppresses resolution and cache size console output
+                                     //  an fullscreen DIB focus gain/loss
+extern int current_skill;            // skill level for currently loaded level (in case
+                                     //  the user changes the cvar while the level is
+                                     //  running, this reflects the level actually in use)
 
 extern qboolean isDedicated;
 
 extern int minimum_memory;
-
-
-// TODO: Move these into their own header files.
-
-//
-// chase.c
-//
-extern cvar_t chase_active;
-
-void Chase_Init(void);
-void Chase_Reset(void);
-void Chase_Update(void);
-
-//
-// world.c
-//
-qboolean SV_RecursiveHullCheck(hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
-
-//
-// view.c
-//
-void V_CalcBlend(void);
 
 #endif // !QUAKEDEF_H
