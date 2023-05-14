@@ -106,10 +106,7 @@ char m_return_reason[32];
 
 #define StartingGame    (m_multiplayer_cursor == 1)
 #define JoiningGame     (m_multiplayer_cursor == 0)
-#define SerialConfig    (m_net_cursor == 0)
-#define DirectConfig    (m_net_cursor == 1)
-#define IPXConfig       (m_net_cursor == 2)
-#define TCPIPConfig     (m_net_cursor == 3)
+#define TCPIPConfig     (m_net_cursor == 0)
 
 void M_ConfigureNetSubsystem(void);
 
@@ -1583,11 +1580,7 @@ void M_LanConfig_Draw(void) {
     } else {
         startJoin = "Join Game";
     }
-    if(IPXConfig) {
-        protocol = "IPX";
-    } else {
-        protocol = "TCP/IP";
-    }
+    protocol = "TCP/IP";
     M_Print(basex, 32, va("%s - %s", startJoin, protocol));
     basex += 8;
 
@@ -2494,11 +2487,7 @@ void M_ConfigureNetSubsystem(void) {
 // enable/disable net systems to match desired config
 
     Cbuf_AddText("stopdemo\n");
-    if(SerialConfig || DirectConfig) {
-        Cbuf_AddText("com1 enable\n");
-    }
-
-    if(IPXConfig || TCPIPConfig) {
+    if(TCPIPConfig) {
         net_hostport = lanConfig_port;
     }
 }
