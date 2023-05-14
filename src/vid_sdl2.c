@@ -30,22 +30,19 @@
 const char *gl_vendor;
 const char *gl_renderer;
 const char *gl_version;
-const char *gl_extensions;
 unsigned short d_8to16table[256];
 unsigned int d_8to24table[256];
 unsigned char d_15to8table[65536];
-qboolean DDActive;
 qboolean scr_skipupdate;
-qboolean isPermedia = false;
 float gldepthmin, gldepthmax;
 int texture_extension_number = 1;
 cvar_t gl_ztrick = {"gl_ztrick", "1"};
 cvar_t _windowed_mouse = {"_windowed_mouse","1", true};
 
-#ifdef GLQUAKE
-int texture_mode = GL_LINEAR;
+#ifdef RENDER_GL
+int texture_mode;
 #else
-#include "render_common/d_local.h"
+#include "render_soft/soft_d_local.h"
 
 byte *vid_buffer = NULL;
 SDL_Renderer *sdl_renderer = NULL;
@@ -56,7 +53,7 @@ static int vid_surfcachesize;
 static int VID_highhunkmark;
 
 qboolean VID_AllocBuffers(int width, int height);
-#endif // GLQUAKE
+#endif // RENDER_GL
 
 
 // TODO: Temporary stuff that should eventually be deleted.
@@ -75,17 +72,9 @@ float mouse_y = 0;
  */
 void VID_HandlePause(qboolean pause) {}
 
-void VID_ForceLockState(int lk) {}
-
-int VID_ForceUnlockedAndReturnState(void) {
-    return 0;
-}
-
 void D_BeginDirectRect(int x, int y, byte *pbitmap, int width, int height) {}
 
 void D_EndDirectRect(int x, int y, int width, int height) {}
-
-void VID_SetDefaultMode(void) {}
 
 
 /*
@@ -154,7 +143,7 @@ void VID_Init(unsigned char *palette) {
         Sys_Error("Unable to initialize SDL2.\n");
     }
 
-#ifdef GLQUAKE
+#ifdef RENDER_GL
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
@@ -179,11 +168,8 @@ void VID_Init(unsigned char *palette) {
     Con_Printf("GL_VENDOR: %s\n", gl_vendor);
     gl_renderer = (char*)glGetString (GL_RENDERER);
     Con_Printf("GL_RENDERER: %s\n", gl_renderer);
-
     gl_version = (char*)glGetString (GL_VERSION);
     Con_Printf("GL_VERSION: %s\n", gl_version);
-    gl_extensions = (char*)glGetString (GL_EXTENSIONS);
-    // Don't print the GL extensions. Modern GPUs support way too many of them.
 
     GLint gl_mtex_units;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &gl_mtex_units);
@@ -239,7 +225,7 @@ void VID_Init(unsigned char *palette) {
     if(sdl_texture == NULL) {
         Sys_Error("Unable to create SDL2 texture.\n");
     }
-#endif // GLQUAKE
+#endif // RENDER_GL
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -259,7 +245,7 @@ void VID_Init(unsigned char *palette) {
     vid.colormap = host_colormap;
     vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-#ifndef GLQUAKE
+#ifdef RENDER_SOFT
     // TODO: Make this a bit less hardcoded. :)
     vid_buffer = malloc(VID_WIDTH * VID_HEIGHT);
     vid.buffer = vid.conbuffer = vid.direct = vid_buffer;
@@ -268,11 +254,11 @@ void VID_Init(unsigned char *palette) {
 
     VID_AllocBuffers(VID_WIDTH, VID_HEIGHT);
     D_InitCaches(vid_surfcache, vid_surfcachesize);
-#endif // GLQUAKE
+#endif // RENDER_SOFT
 }
 
 void VID_Shutdown(void) {
-#ifndef GLQUAKE
+#ifdef RENDER_SOFT
     if(sdl_texture) {
         SDL_DestroyTexture(sdl_texture);
     }
@@ -284,7 +270,7 @@ void VID_Shutdown(void) {
     if(vid_buffer) {
         free(vid_buffer);
     }
-#endif // !GLQUAKE
+#endif // RENDER_SOFT
 
     SDL_SetRelativeMouseMode(SDL_FALSE);
 
@@ -293,11 +279,6 @@ void VID_Shutdown(void) {
     }
 
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
-}
-
-int VID_SetMode(int modenum, unsigned char *palette) {
-    VID_SetPalette(palette);
-    return modenum;
 }
 
 
@@ -454,7 +435,7 @@ void WND_ProcessEvents(void) {
 /*
  * Software-specific functions.
  */
-#ifndef GLQUAKE
+#ifdef RENDER_SOFT
 qboolean VID_AllocBuffers(int width, int height) {
     int		tsize, tbuffersize;
 
@@ -513,17 +494,13 @@ void VID_Update(vrect_t *rects) {
 
     WND_ProcessEvents();
 }
-#endif // !GLQUAKE
+#endif // RENDER_SOFT
 
 
 /*
  * GL-specific functions.
  */
-#ifdef GLQUAKE
-qboolean VID_Is8bit(void) {
-    return false;
-}
-
+#ifdef RENDER_GL
 void GL_BeginRendering(int *x, int *y, int *width, int *height) {
     *x = *y = 0;
     *width = VID_WIDTH;
@@ -534,4 +511,4 @@ void GL_EndRendering(void) {
     SDL_GL_SwapWindow(sdl_window);
     WND_ProcessEvents();
 }
-#endif
+#endif // RENDER_GL

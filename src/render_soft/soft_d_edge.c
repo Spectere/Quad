@@ -20,7 +20,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // d_edge.c
 
 #include "../quakedef.h"
-#include "../render_common/d_local.h"
+#include "soft_d_local.h"
+#include "soft_d_scan.h"
+#include "soft_r_bsp.h"
+#include "soft_r_misc.h"
 
 static int miplevel;
 
@@ -28,10 +31,6 @@ float scale_for_mip;
 int screenwidth;
 int ubasestep, errorterm, erroradjustup, erroradjustdown;
 int vstartscan;
-
-// FIXME: should go away
-extern void R_RotateBmodel(void);
-extern void R_TransformFrustum(void);
 
 vec3_t transformed_modelorg;
 

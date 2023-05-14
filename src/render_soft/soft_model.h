@@ -18,8 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifndef __MODEL__
-#define __MODEL__
+#ifndef RENDER_SOFT_MODEL_H
+#define RENDER_SOFT_MODEL_H
 
 #include "../modelgen.h"
 #include "../spritegn.h"
@@ -355,4 +355,4 @@ void Mod_TouchModel(char *name);
 mleaf_t *Mod_PointInLeaf(float *p, model_t *model);
 byte *Mod_LeafPVS(mleaf_t *leaf, model_t *model);
 
-#endif    // __MODEL__
+#endif // !RENDER_SOFT_MODEL_H

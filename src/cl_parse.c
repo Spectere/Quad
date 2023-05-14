@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#ifdef RENDER_GL
+#include "render_gl/gl_r_misc.h"
+#endif // RENDER_GL
+
 char *svc_strings[] = {
         "svc_bad",
         "svc_nop",
@@ -323,9 +327,9 @@ void CL_ParseUpdate(int bits) {
     qboolean forcelink;
     entity_t *ent;
     int num;
-#ifdef GLQUAKE
+#ifdef RENDER_GL
     int skin;
-#endif // GLQUAKE
+#endif // RENDER_GL
 
     if(cls.signon == SIGNONS - 1) {    // first update is the final signon stage
         cls.signon = SIGNONS;
@@ -382,10 +386,11 @@ void CL_ParseUpdate(int bits) {
         } else {
             forcelink = true;
         }    // hack to make null model players work
-#ifdef GLQUAKE
-        if (num > 0 && num <= cl.maxclients)
-            R_TranslatePlayerSkin (num - 1);
-#endif
+#ifdef RENDER_GL
+        if (num > 0 && num <= cl.maxclients) {
+            R_TranslatePlayerSkin(num - 1);
+        }
+#endif // RENDER_GL
     }
 
     if(bits & U_FRAME) {
@@ -408,7 +413,7 @@ void CL_ParseUpdate(int bits) {
         ent->colormap = cl.scores[i - 1].translations;
     }
 
-#ifdef GLQUAKE
+#ifdef RENDER_GL
     if (bits & U_SKIN)
         skin = MSG_ReadByte();
     else
@@ -418,15 +423,13 @@ void CL_ParseUpdate(int bits) {
         if (num > 0 && num <= cl.maxclients)
             R_TranslatePlayerSkin (num - 1);
     }
-
 #else
-
     if(bits & U_SKIN) {
         ent->skinnum = MSG_ReadByte();
     } else {
         ent->skinnum = ent->baseline.skin;
     }
-#endif
+#endif // RENDER_GL
 
     if(bits & U_EFFECTS) {
         ent->effects = MSG_ReadByte();
@@ -633,9 +636,9 @@ void CL_NewTranslation(int slot) {
     memcpy (dest, vid.colormap, sizeof(cl.scores[slot].translations));
     top = cl.scores[slot].colors & 0xf0;
     bottom = (cl.scores[slot].colors & 15) << 4;
-#ifdef GLQUAKE
+#ifdef RENDER_GL
     R_TranslatePlayerSkin (slot);
-#endif
+#endif // RENDER_GL
 
     for(i = 0; i < VID_GRADES; i++, dest += 256, source += 256) {
         if(top < 128)    // the artists made some backwards ranges.  sigh.

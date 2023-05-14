@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../quakedef.h"
 #include "soft_r_local.h"
-#include "../render_common/d_local.h"    // FIXME: shouldn't need to include this
+#include "soft_d_local.h"    // FIXME: shouldn't need to include this
 
 #define MAXLEFTCLIPEDGES        100
 

@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef BSPFILE_H
+#define BSPFILE_H
 
 // upper design bounds
 
@@ -203,3 +205,5 @@ typedef struct {
 
     byte ambient_level[NUM_AMBIENTS];
 } dleaf_t;
+
+#endif // !BSPFILE_H

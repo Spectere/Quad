@@ -20,6 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 
 #include "../quakedef.h"
+#include "gl_draw.h"
+#include "gl_r_light.h"
+#include "gl_r_main.h"
+#include "gl_r_misc.h"
+#include "gl_r_surf.h"
 
 entity_t r_worldentity;
 
@@ -254,7 +259,7 @@ void R_DrawSpriteModel(entity_t *e) {
 #define NUMVERTEXNORMALS    162
 
 float r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "../render_common/anorms.h"
+#include "../render_common/common_anorms.h"
 };
 
 vec3_t shadevector;

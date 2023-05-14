@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // host.c -- coordinates spawning and killing of local servers
 
 #include "quakedef.h"
-#include "render_soft/soft_r_local.h"
 
 /*
 
@@ -818,12 +817,12 @@ void Host_Init(quakeparms_t *parms) {
         S_Init();
 #else
 
-#ifdef	GLQUAKE
+#ifdef RENDER_GL
         // FIXME: doesn't use the new one-window approach yet
             S_Init ();
-#endif
+#endif // RENDER_GL
 
-#endif    // _WIN32
+#endif // _WIN32
         CDAudio_Init();
         Sbar_Init();
         CL_Init();

@@ -20,15 +20,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // view.c -- player eye positioning
 
 #include "quakedef.h"
-#include "render_soft/soft_r_local.h"
 
 /*
-
 The view is allowed to move slightly from it's true position for bobbing,
 but if it exceeds 8 pixels linear distance (spherical, not box), the list of
 entities sent from the server may not include everything in the pvs, especially
 when crossing a water boudnary.
-
 */
 
 cvar_t lcd_x = { "lcd_x", "0" };
@@ -239,10 +236,10 @@ cvar_t v_gamma = { "gamma", "1", true };
 
 byte gammatable[256];    // palette is sent through this
 
-#ifdef    GLQUAKE
+#ifdef RENDER_GL
 byte		ramps[3][256];
 float		v_blend[4];		// rgba 0.0 - 1.0
-#endif    // GLQUAKE
+#endif // RENDER_GL
 
 void BuildGammaTable(float g) {
     int i, inf;
@@ -439,7 +436,7 @@ void V_CalcPowerupCshift(void) {
 V_CalcBlend
 =============
 */
-#ifdef    GLQUAKE
+#ifdef RENDER_GL
 void V_CalcBlend (void)
 {
     float	r, g, b, a, a2;
@@ -477,14 +474,14 @@ void V_CalcBlend (void)
     if (v_blend[3] < 0)
         v_blend[3] = 0;
 }
-#endif
+#endif // RENDER_GL
 
 /*
 =============
 V_UpdatePalette
 =============
 */
-#ifdef    GLQUAKE
+#ifdef RENDER_GL
 void V_UpdatePalette (void)
 {
     int		i, j;
@@ -571,7 +568,7 @@ void V_UpdatePalette (void)
 
     VID_ShiftPalette (pal);
 }
-#else	// !GLQUAKE
+#else
 
 void V_UpdatePalette(void) {
     int i, j;
@@ -639,7 +636,7 @@ void V_UpdatePalette(void) {
     VID_ShiftPalette(pal);
 }
 
-#endif    // !GLQUAKE
+#endif // RENDER_GL
 
 /*
 ============================================================================== 
@@ -1000,12 +997,12 @@ void V_RenderView(void) {
         R_RenderView();
     }
 
-#ifndef GLQUAKE
+#ifdef RENDER_SOFT
     if(crosshair.value) {
         Draw_Character(scr_vrect.x + scr_vrect.width / 2 + cl_crossx.value,
                        scr_vrect.y + scr_vrect.height / 2 + cl_crossy.value, '+');
     }
-#endif
+#endif // RENDER_SOFT
 }
 
 //============================================================================

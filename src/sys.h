@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sys.h -- non-portable functions
 
+#ifndef SYS_H
+#define SYS_H
+
 //
 // file IO
 //
@@ -53,3 +56,5 @@ char *Sys_ConsoleInput(void);
 
 void Sys_SendKeyEvents(void);
 // Perform Key_Event () callbacks until the input que is empty
+
+#endif // !SYS_H

@@ -20,7 +20,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_bsp.c
 
 #include "../quakedef.h"
+#include "../render_common/common_r_efrag.h"
+#include "soft_r_draw.h"
 #include "soft_r_local.h"
+#include "soft_r_misc.h"
 
 //
 // current entity info

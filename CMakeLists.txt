@@ -15,7 +15,6 @@ if(UNIX OR MINGW OR MSYS)
 endif()
 
 set(SRC_COMMON
-                                        src/render_common/anorms.h
                                         src/bspfile.h
     src/sound/cd_null.c
                                         src/sound/cdaudio.h
@@ -31,9 +30,6 @@ set(SRC_COMMON
     src/console.c                       src/console.h
     src/crc.c                           src/crc.h
     src/cvar.c                          src/cvar.h
-                                        src/render_common/d_iface.h
-                                        src/render_common/d_local.h
-                                        src/render_common/draw.h
     src/host.c
     src/host_cmd.c
                                         src/input.h
@@ -55,16 +51,8 @@ set(SRC_COMMON
                                         src/progs.h
                                         src/protocol.h
                                         src/quakedef.h
-    src/render_common/r_part.c
-                                        src/render_common/render.h
     src/sbar.c                          src/sbar.h
-                                        src/render_common/screen.h
                                         src/server.h
-    src/sound/snd_dma.c
-    src/sound/snd_mem.c
-    src/sound/snd_mix.c
-    src/sound/snd_sdl2.c
-                                        src/sound/sound.h
                                         src/spritegn.h
     src/sv_main.c
     src/sv_move.c
@@ -78,6 +66,23 @@ set(SRC_COMMON
     src/wad.c                           src/wad.h
     src/world.c                         src/world.h
     src/zone.c                          src/zone.h
+
+    # Renderer - Common
+                                        src/render_common/common_anorms.h
+                                        src/render_common/common_r_misc.h
+                                        src/render_common/common_d_iface.h
+                                        src/render_common/common_draw.h
+                                        src/render_common/common_r_efrag.h
+    src/render_common/common_r_part.c   src/render_common/common_r_part.h
+                                        src/render_common/common_render.h
+                                        src/render_common/common_screen.h
+
+    # Sound
+                                        src/sound/sound.h
+    src/sound/snd_dma.c
+    src/sound/snd_mem.c
+    src/sound/snd_mix.c
+    src/sound/snd_sdl2.c
 )
 
 set(SRC_RENDER_SOFT
@@ -85,10 +90,11 @@ set(SRC_RENDER_SOFT
     src/render_soft/soft_d_edge.c
     src/render_soft/soft_d_fill.c
     src/render_soft/soft_d_init.c
+                                        src/render_soft/soft_d_local.h
     src/render_soft/soft_d_modech.c
     src/render_soft/soft_d_part.c
     src/render_soft/soft_d_polyse.c
-    src/render_soft/soft_d_scan.c
+    src/render_soft/soft_d_scan.c       src/render_soft/soft_d_scan.h
     src/render_soft/soft_d_sky.c
     src/render_soft/soft_d_sprite.c
     src/render_soft/soft_d_surf.c
@@ -96,36 +102,37 @@ set(SRC_RENDER_SOFT
     src/render_soft/soft_d_zpoint.c
     src/render_soft/soft_draw.c
     src/render_soft/soft_model.c        src/render_soft/soft_model.h
-    src/render_soft/soft_r_aclip.c
-    src/render_soft/soft_r_alias.c
-    src/render_soft/soft_r_bsp.c
-    src/render_soft/soft_r_draw.c
-    src/render_soft/soft_r_edge.c
-    src/render_soft/soft_r_efrag.c
-    src/render_soft/soft_r_light.c
+    src/render_soft/soft_r_aclip.c      src/render_soft/soft_r_aclip.h
+    src/render_soft/soft_r_alias.c      src/render_soft/soft_r_alias.h
+    src/render_soft/soft_r_bsp.c        src/render_soft/soft_r_bsp.h
+    src/render_soft/soft_r_draw.c       src/render_soft/soft_r_draw.h
+    src/render_soft/soft_r_edge.c       src/render_soft/soft_r_edge.h
+    src/render_soft/soft_r_efrag.c      src/render_soft/soft_r_efrag.h
+    src/render_soft/soft_r_light.c      src/render_soft/soft_r_light.h
                                         src/render_soft/soft_r_local.h
-    src/render_soft/soft_r_main.c
-    src/render_soft/soft_r_misc.c
+    src/render_soft/soft_r_main.c       src/rendeR_soft/soft_r_main.h
+    src/render_soft/soft_r_misc.c       src/render_soft/soft_r_misc.h
                                         src/render_soft/soft_r_shared.h
-    src/render_soft/soft_r_sky.c
-    src/render_soft/soft_r_sprite.c
-    src/render_soft/soft_r_surf.c
+    src/render_soft/soft_r_sky.c        src/render_soft/soft_r_sky.h
+    src/render_soft/soft_r_sprite.c     src/render_soft/soft_r_sprite.h
+    src/render_soft/soft_r_surf.c       src/render_soft/soft_r_surf.h
     src/render_soft/soft_r_vars.c
     src/render_soft/soft_screen.c
 )
 
 set(SRC_RENDER_GL
                                         src/render_gl/gl_anorm_dots.h
-    src/render_gl/gl_draw.c
-    src/render_gl/gl_mesh.c
+    src/render_gl/gl_draw.c             src/render_gl/gl_draw.h
+    src/render_gl/gl_mesh.c             src/render_gl/gl_mesh.h
     src/render_gl/gl_model.c            src/render_gl/gl_model.h
-    src/render_gl/gl_refrag.c
-    src/render_gl/gl_rlight.c
-    src/render_gl/gl_rmain.c
-    src/render_gl/gl_rmisc.c
-    src/render_gl/gl_rsurf.c
+    src/render_gl/gl_r_efrag.c
+    src/render_gl/gl_r_light.c          src/render_gl/gl_r_light.h
+    src/render_gl/gl_r_main.c           src/render_gl/gl_r_main.h
+    src/render_gl/gl_r_misc.c           src/render_gl/gl_r_misc.h
+    src/render_gl/gl_r_surf.c           src/render_gl/gl_r_surf.h
     src/render_gl/gl_screen.c
-    src/render_gl/gl_warp.c             src/render_gl/gl_warp_sin.h
+    src/render_gl/gl_warp.c             src/render_gl/gl_warp.h
+                                        src/render_gl/gl_warp_sin.h
                                         src/render_gl/glquake.h
 )
 
@@ -144,6 +151,10 @@ add_executable(${RENDER_SOFT}
         ${SRC_RENDER_SOFT}
 )
 
+target_compile_definitions(${RENDER_SOFT} PUBLIC
+    -DRENDER_SOFT
+)
+
 ##                   ###################################################################################################
 ##  OPENGL RENDERER  ###################################################################################################
 ##                   ###################################################################################################
@@ -153,7 +164,7 @@ add_executable(${RENDER_GL}
 )
 
 target_compile_definitions(${RENDER_GL} PUBLIC
-        -DGLQUAKE
+        -DRENDER_GL
 )
 
 target_link_libraries(${RENDER_GL}

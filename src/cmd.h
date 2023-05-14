@@ -20,10 +20,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // cmd.h -- Command buffer and command execution
 
+#ifndef CMD_H
+#define CMD_H
+
 //===========================================================================
 
 /*
-
 Any number of commands can be added in a frame, from several different sources.
 Most commands come from either keybindings or console line input, but remote
 servers can also send across commands and entire text files can be execed.
@@ -31,7 +33,6 @@ servers can also send across commands and entire text files can be execed.
 The + command line options are also added to the command buffer.
 
 The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
-
 */
 
 
@@ -118,3 +119,4 @@ void Cmd_Print(char *text);
 // used by command functions to send output to either the graphics console or
 // passed as a print message to the client
 
+#endif // !CMD_H

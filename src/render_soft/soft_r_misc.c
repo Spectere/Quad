@@ -20,7 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_misc.c
 
 #include "../quakedef.h"
+#include "soft_r_light.h"
 #include "soft_r_local.h"
+#include "soft_r_sky.h"
 
 /*
 ===============
@@ -274,20 +276,6 @@ void TransformVector(vec3_t in, vec3_t out) {
     out[0] = DotProduct(in, vright);
     out[1] = DotProduct(in, vup);
     out[2] = DotProduct(in, vpn);
-}
-
-/*
-================
-R_TransformPlane
-================
-*/
-void R_TransformPlane(mplane_t *p, float *normal, float *dist) {
-    float d;
-
-    d = DotProduct (r_origin, p->normal);
-    *dist = p->dist - d;
-// TODO: when we have rotating entities, this will need to use the view matrix
-    TransformVector(p->normal, normal);
 }
 
 /*

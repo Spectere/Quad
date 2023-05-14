@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // vid buffer
 
 #include "../quakedef.h"
+#include "gl_draw.h"
 
 #define GL_COLOR_INDEX8_EXT     0x80E5
 
@@ -1082,10 +1083,6 @@ void GL_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean alp
         }
     }
 
-    if(VID_Is8bit() && !alpha && (data != scrap_texels[0])) {
-        GL_Upload8_EXT(data, width, height, mipmap, alpha);
-        return;
-    }
     GL_Upload32(trans, width, height, mipmap, alpha);
 }
 

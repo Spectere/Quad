@@ -23,6 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // on the same machine.
 
 #include "../quakedef.h"
+#include "gl_draw.h"
+#include "gl_mesh.h"
+#include "gl_warp.h"
 
 model_t *loadmodel;
 char loadname[32];    // for hunk tags

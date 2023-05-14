@@ -18,6 +18,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef KEYS_H
+#define KEYS_H
+
 //
 // these are the key numbers that should be passed to Key_Event
 //
@@ -128,3 +131,5 @@ void Key_Init(void);
 void Key_WriteBindings(FILE *f);
 void Key_SetBinding(int keynum, char *binding);
 void Key_ClearStates(void);
+
+#endif // !KEYS_H

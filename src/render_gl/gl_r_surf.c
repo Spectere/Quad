@@ -20,6 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_surf.c: surface-related refresh code
 
 #include "../quakedef.h"
+#include "../render_common/common_r_efrag.h"
+#include "gl_draw.h"
+#include "gl_r_light.h"
+#include "gl_r_main.h"
+#include "gl_warp.h"
 
 int skytexturenum;
 
@@ -1307,7 +1312,6 @@ with all the surfaces from all brush models
 void GL_BuildLightmaps(void) {
     int i, j;
     model_t *m;
-    extern qboolean isPermedia;
 
     memset (allocated, 0, sizeof(allocated));
 
@@ -1320,9 +1324,6 @@ void GL_BuildLightmaps(void) {
 
     gl_lightmap_format = GL_LUMINANCE;
     // default differently on the Permedia
-    if(isPermedia) {
-        gl_lightmap_format = GL_RGBA;
-    }
 
     if(COM_CheckParm("-lm_1")) {
         gl_lightmap_format = GL_LUMINANCE;

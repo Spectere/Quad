@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // mathlib.h
 
+#ifndef MATHLIB_H
+#define MATHLIB_H
+
 typedef float vec_t;
 typedef vec_t vec3_t[3];
 typedef vec_t vec5_t[5];
@@ -86,3 +89,5 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
     )                                        \
     :                                        \
         BoxOnPlaneSide( (emins), (emaxs), (p)))
+
+#endif // !MATHLIB_H

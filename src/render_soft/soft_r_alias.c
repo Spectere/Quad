@@ -20,9 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_alias.c: routines for setting up to draw alias models
 
 #include "../quakedef.h"
+#include "soft_r_aclip.h"
 #include "soft_r_local.h"
-#include "../render_common/d_local.h"    // FIXME: shouldn't be needed (is needed for patch
-                                         // right now, but that should move)
 
 #define LIGHT_MIN    5        // lowest light value we'll allow, to avoid the
                               //  need for inner-loop light clamping
@@ -66,7 +65,7 @@ static aedge_t aedges[12] = {{ 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 0 }, { 4, 5 }, {
 #define NUMVERTEXNORMALS    162
 
 float r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "../render_common/anorms.h"
+#include "../render_common/common_anorms.h"
 };
 
 void R_AliasTransformAndProjectFinalVerts(finalvert_t *fv, stvert_t *pstverts);

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // d_part.c: software driver module for drawing particles
 
 #include "../quakedef.h"
-#include "../render_common/d_local.h"
+#include "soft_d_local.h"
 
 /*
 ==============

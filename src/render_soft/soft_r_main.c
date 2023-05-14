@@ -20,7 +20,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 
 #include "../quakedef.h"
+#include "../render_common/common_r_misc.h"
+#include "../render_common/common_r_part.h"
+#include "soft_r_alias.h"
+#include "soft_r_bsp.h"
+#include "soft_r_draw.h"
+#include "soft_r_edge.h"
+#include "soft_r_efrag.h"
+#include "soft_r_light.h"
 #include "soft_r_local.h"
+#include "soft_r_main.h"
+#include "soft_r_misc.h"
+#include "soft_r_sprite.h"
 
 void *colormap;
 vec3_t viewlightvec;

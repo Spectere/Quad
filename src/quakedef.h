@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // quakedef.h -- primary header for client
 
+#ifndef QUAKEDEF_H
+#define QUAKEDEF_H
+
 //#define	GLTEST			// experimental stuff
 
 #define QUAKE_GAME            // as opposed to utilities
@@ -206,27 +209,25 @@ typedef struct {
 } entity_state_t;
 
 #include "wad.h"
-#include "render_common/draw.h"
+#include "render_common/common_draw.h"
 #include "cvar.h"
-#include "render_common/screen.h"
+#include "render_common/common_screen.h"
 #include "net.h"
 #include "protocol.h"
 #include "cmd.h"
 #include "sbar.h"
 #include "sound/sound.h"
-#include "render_common/render.h"
+#include "render_common/common_render.h"
 #include "client.h"
 #include "progs.h"
 #include "server.h"
 
-#ifdef GLQUAKE
+#ifdef RENDER_GL
 #include "render_gl/gl_model.h"
 #else
-
 #include "render_soft/soft_model.h"
-#include "render_common/d_iface.h"
-
-#endif
+#include "render_common/common_d_iface.h"
+#endif // RENDER_GL
 
 #include "input.h"
 #include "world.h"
@@ -237,9 +238,9 @@ typedef struct {
 #include "crc.h"
 #include "sound/cdaudio.h"
 
-#ifdef GLQUAKE
+#ifdef RENDER_GL
 #include "render_gl/glquake.h"
-#endif
+#endif // RENDER_GL
 
 //=============================================================================
 
@@ -323,3 +324,5 @@ qboolean SV_RecursiveHullCheck(hull_t *hull, int num, float p1f, float p2f, vec3
 // view.c
 //
 void V_CalcBlend(void);
+
+#endif // !QUAKEDEF_H

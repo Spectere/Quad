@@ -20,7 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_misc.c
 
 #include "../quakedef.h"
-#include "../render_soft/soft_r_local.h"
+#include "../render_common/common_r_misc.h"
+#include "../render_common/common_r_part.h"
+#include "gl_draw.h"
+#include "gl_r_misc.h"
+#include "gl_r_surf.h"
 
 /*
 ==================

@@ -19,7 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_local.h:  private rasterization driver defs
 
-#include "../render_soft/soft_r_shared.h"
+#ifndef RENDER_SOFT_D_LOCAL
+#define RENDER_SOFT_D_LOCAL
+
+#include "soft_r_shared.h"
 
 //
 // TODO: fine-tune this; it's based on providing some overage even if there
@@ -67,10 +70,6 @@ extern float d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 fixed16_t sadjust, tadjust;
 fixed16_t bbextents, bbextentt;
 
-void D_DrawSpans8(espan_t *pspans);
-void D_DrawSpans16(espan_t *pspans);
-void D_DrawZSpans(espan_t *pspans);
-void Turbulent8(espan_t *pspan);
 void D_SpriteDrawSpans(sspan_t *pspan);
 
 void D_DrawSkyScans8(espan_t *pspan);
@@ -101,3 +100,4 @@ extern float d_scalemip[3];
 
 extern void (*d_drawspans)(espan_t *pspan);
 
+#endif // !RENDER_SOFT_D_LOCAL
