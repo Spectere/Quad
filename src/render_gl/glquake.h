@@ -21,10 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef RENDER_GL_GLQUAKE_H
 #define RENDER_GL_GLQUAKE_H
 
-#ifdef _WIN32 // TODO: Remove me? Potentially unused Win32 stuff.
-#include <windows.h>
-#endif
-
 #include <SDL.h>
 #include <SDL_opengl.h>
 

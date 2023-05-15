@@ -17,9 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// vid_vidsdl2.c -- SDL GL vid component
+// vid_sdl2.c -- SDL video component
 
 #include <SDL.h>
+
+#ifdef RENDER_GL
+#include <glad/glad.h>
+#endif // RENDER_GL
 
 #include "quakedef.h"
 
@@ -165,13 +169,17 @@ void VID_Init(unsigned char *palette) {
         Sys_Error("Unable to initialize GL context.\n");
     }
 
+    if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+        Sys_Error("Unable to initialize GLAD.\n");
+    }
+
     VID_SetPalette(palette);
 
-    gl_vendor = (char*)glGetString (GL_VENDOR);
+    gl_vendor = (char*)glGetString(GL_VENDOR);
     Con_Printf("GL_VENDOR: %s\n", gl_vendor);
-    gl_renderer = (char*)glGetString (GL_RENDERER);
+    gl_renderer = (char*)glGetString(GL_RENDERER);
     Con_Printf("GL_RENDERER: %s\n", gl_renderer);
-    gl_version = (char*)glGetString (GL_VERSION);
+    gl_version = (char*)glGetString(GL_VERSION);
     Con_Printf("GL_VERSION: %s\n", gl_version);
 
     GLint gl_mtex_units;
@@ -183,7 +191,7 @@ void VID_Init(unsigned char *palette) {
         Sys_Error("QuadGL requires a graphics card with multitexturing support.\n");
     }
 
-    glClearColor (1,0,0,0);
+    glClearColor(1,0,0,0);
     glCullFace(GL_FRONT);
     glEnable(GL_TEXTURE_2D);
 

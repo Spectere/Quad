@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // draw.c -- this is the only file outside the refresh that touches the
 // vid buffer
 
+#ifdef RENDER_GL
+#include <glad/glad.h>
+#endif // RENDER_GL
+
 #include "../quakedef.h"
 #include "gl_draw.h"
 

@@ -10,8 +10,16 @@ find_package(OpenGL REQUIRED)
 set(CMAKE_C_STANDARD 99)
 
 # Platform-specific definitions.
-if(UNIX OR MINGW OR MSYS)
+if(UNIX)
     add_compile_definitions(POSIX)
+endif()
+
+if(MINGW OR MSYS)
+    add_compile_definitions(MSYS)
+endif()
+
+if(WIN32 OR MINGW OR MSYS)
+    add_compile_definitions(WIN32)
 endif()
 
 set(SRC_COMMON
@@ -131,12 +139,13 @@ set(SRC_RENDER_GL
     src/render_gl/gl_screen.c
     src/render_gl/gl_warp.c             src/render_gl/gl_warp.h
                                         src/render_gl/gl_warp_sin.h
+    src/render_gl/glad.c
                                         src/render_gl/glquake.h
 )
 
 # Common includes/libraries.
-include_directories(${SDL2_INCLUDE_DIRS})
-link_libraries(${SDL2_LIBRARIES})
+include_directories(SDL2::SDL2)
+link_libraries(SDL2::SDL2)
 
 # Common compiler settings.
 add_compile_options(-Wall -Werror)
@@ -150,7 +159,7 @@ add_executable(${RENDER_SOFT}
 )
 
 target_compile_definitions(${RENDER_SOFT} PUBLIC
-    -DRENDER_SOFT
+        -DRENDER_SOFT
 )
 
 ##                   ###################################################################################################
@@ -163,6 +172,10 @@ add_executable(${RENDER_GL}
 
 target_compile_definitions(${RENDER_GL} PUBLIC
         -DRENDER_GL
+)
+
+target_include_directories(${RENDER_GL} PUBLIC
+        contrib/glad
 )
 
 target_link_libraries(${RENDER_GL}
