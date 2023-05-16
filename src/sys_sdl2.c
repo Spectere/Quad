@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sys_sdl2.c -- Generic SDL2 system interface code
 
+#define SDL_MAIN_HANDLED
+
 #include <stddef.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -26,9 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 #include "sys_sdl2.h"
 
-#ifdef POSIX
+#if defined(POSIX) || defined(MSYS)
 #include <sys/time.h>
-#endif
+#endif // POSIX || MSYS
 
 #include "host.h"
 
@@ -95,7 +97,11 @@ int	Sys_FileTime(char *path) {
 }
 
 void Sys_mkdir(char *path) {
+#ifdef WIN32
+    mkdir(path);
+#else
     mkdir(path, 0777);
+#endif // WIN32
 }
 
 void Sys_Error(char *error, ...) {
@@ -147,7 +153,7 @@ void Sys_Quit(void) {
 }
 
 double Sys_FloatTime(void) {
-#ifdef POSIX
+#if defined(POSIX) || defined(MSYS)
     // POSIX-y time implementation.
     struct timeval tp;
     struct timezone tzp;
@@ -164,10 +170,11 @@ double Sys_FloatTime(void) {
 #else
     // SDL time implementation.
     return (double)SDL_GetTicks64() / 1000;
-#endif // POSIX
+#endif // POSIX || MSYS
 }
 
 char *Sys_ConsoleInput(void) {  // TODO: Might have to rework this for Win32 (does it have unistd.h?)
+#ifdef POSIX
     static char text[256];
     long len;
     fd_set fdset;
@@ -190,6 +197,7 @@ char *Sys_ConsoleInput(void) {  // TODO: Might have to rework this for Win32 (do
 
         return text;
     }
+#endif // POSIX
 
     return NULL;
 }

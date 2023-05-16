@@ -326,7 +326,6 @@ void R_InitSky(texture_t *mt) {
     unsigned transpix;
     int r, g, b;
     unsigned *rgba;
-    extern int skytexturenum;
 
     src = (byte *)mt + mt->offsets[0];
 

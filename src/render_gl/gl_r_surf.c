@@ -19,6 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_surf.c: surface-related refresh code
 
+#ifdef RENDER_GL
+#include <glad/glad.h>
+#endif // RENDER_GL
+
 #include "../quakedef.h"
 #include "../render_common/common_r_efrag.h"
 #include "gl_draw.h"

@@ -81,10 +81,6 @@ void PerpendicularVector(vec3_t dst, const vec3_t src) {
     VectorNormalize(dst);
 }
 
-#ifdef _WIN32
-#pragma optimize( "", off )
-#endif
-
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees) {
     float m[3][3];
     float im[3][3];
@@ -137,10 +133,6 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
         dst[i] = rot[i][0] * point[0] + rot[i][1] * point[1] + rot[i][2] * point[2];
     }
 }
-
-#ifdef _WIN32
-#pragma optimize( "", on )
-#endif
 
 /*-----------------------------------------------------------------*/
 
