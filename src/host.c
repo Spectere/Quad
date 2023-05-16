@@ -820,9 +820,7 @@ void Host_Init(quakeparms_t *parms) {
         SCR_Init();
         R_Init();
 
-#ifdef RENDER_GL
-        S_Init ();
-#endif // RENDER_GL
+        S_Init();
 
         CDAudio_Init();
         Sbar_Init();
