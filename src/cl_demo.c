@@ -223,7 +223,11 @@ void CL_Record_f(void) {
         track = -1;
     }
 
-    sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+    int result = snprintf(name, MAX_OSPATH, "%s/%s", com_gamedir, Cmd_Argv(1));
+    if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+        Con_Printf("ERROR: path too long.\n");
+        return;
+    }
 
 //
 // start the map up

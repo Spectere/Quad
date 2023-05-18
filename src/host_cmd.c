@@ -515,7 +515,11 @@ void Host_Loadgame_f(void) {
 
     cls.demonum = -1;        // stop demo loop in case this fails
 
-    sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+    int result = snprintf(name, MAX_OSPATH, "%s/%s", com_gamedir, Cmd_Argv(1));
+    if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+        Con_Printf("ERROR: resulting path is too long!\n");
+        return;
+    }
     COM_DefaultExtension(name, ".sav");
 
 // we can't call SCR_BeginLoadingPlaque, because too much stack space has

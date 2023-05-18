@@ -1153,7 +1153,11 @@ void Mod_LoadBrushModel(model_t *mod, void *buffer) {
         if(i < mod->numsubmodels - 1) {    // duplicate the basic information
             char name[10];
 
-            sprintf (name, "*%i", i + 1);
+            int result = snprintf(name, 10, "*%i", i + 1);
+            if(!CHECK_SAFE_PRINT(result, 10)) {
+                Sys_Error("Mod_LoadBrushModel: submodel name too long\n");
+            }
+
             loadmodel = Mod_FindName(name);
             *loadmodel = *mod;
             strcpy (loadmodel->name, name);

@@ -301,9 +301,9 @@ void GL_MakeAliasModelDisplayLists(model_t *m, aliashdr_t *hdr) {
     //
     // look for a cached version
     //
-    strcpy (cache, "glquake/");
+    strcpy(cache, "glquake/");
     COM_StripExtension(m->name + strlen("progs/"), cache + strlen("glquake/"));
-    strcat (cache, ".ms2");
+    strcat(cache, ".ms2");
 
     COM_FOpenFile(cache, &f);
     if(f) {
@@ -323,14 +323,18 @@ void GL_MakeAliasModelDisplayLists(model_t *m, aliashdr_t *hdr) {
         //
         // save out the cached version
         //
-        sprintf (fullpath, "%s/%s", com_gamedir, cache);
-        f = fopen(fullpath, "wb");
-        if(f) {
-            fwrite(&numcommands, 4, 1, f);
-            fwrite(&numorder, 4, 1, f);
-            fwrite(&commands, numcommands * sizeof(commands[0]), 1, f);
-            fwrite(&vertexorder, numorder * sizeof(vertexorder[0]), 1, f);
-            fclose(f);
+        int result = snprintf(fullpath, MAX_OSPATH, "%s/%s", com_gamedir, cache);
+        if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+            Con_Printf("GL_MakeAliasModelDisplayLists: path too long when writing '%s'!\n", cache);
+        } else {
+            f = fopen(fullpath, "wb");
+            if(f) {
+                fwrite(&numcommands, 4, 1, f);
+                fwrite(&numorder, 4, 1, f);
+                fwrite(&commands, numcommands * sizeof(commands[0]), 1, f);
+                fwrite(&vertexorder, numorder * sizeof(vertexorder[0]), 1, f);
+                fclose(f);
+            }
         }
     }
 

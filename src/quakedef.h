@@ -80,6 +80,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAX_STYLESTRING    64
 
 //
+// sanity checks
+//
+#define CHECK_SAFE_PRINT(result, count) (result >= 0 && result < count)
+
+//
 // stats are integers communicated to the client by the server
 //
 #define MAX_CL_STATS        32

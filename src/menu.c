@@ -433,9 +433,15 @@ void M_ScanSaves(void) {
     int version;
 
     for(i = 0; i < MAX_SAVEGAMES; i++) {
-        strcpy (m_filenames[i], "--- UNUSED SLOT ---");
+        strcpy(m_filenames[i], "--- UNUSED SLOT ---");
         loadable[i] = false;
-        sprintf (name, "%s/s%i.sav", com_gamedir, i);
+
+        int result = snprintf(name, MAX_OSPATH, "%s/s%i.sav", com_gamedir, i);
+        if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+            Con_Printf("M_ScanSaves: path is too long!\n");
+            continue;
+        }
+
         f = fopen(name, "r");
         if(!f) {
             continue;

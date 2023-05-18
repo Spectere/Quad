@@ -1152,7 +1152,11 @@ void Mod_LoadBrushModel(model_t *mod, void *buffer) {
         if(i < mod->numsubmodels - 1) {    // duplicate the basic information
             char name[10];
 
-            sprintf (name, "*%i", i + 1);
+            int result = snprintf(name, 10, "*%i", i + 1);
+            if(!CHECK_SAFE_PRINT(result, 10)) {
+                Sys_Error("Mod_LoadBrushModel: path too long!\n");
+            }
+
             loadmodel = Mod_FindName(name);
             *loadmodel = *mod;
             strcpy (loadmodel->name, name);
@@ -1364,7 +1368,12 @@ void *Mod_LoadAllSkins(int numskins, daliasskintype_t *pskintype) {
             pheader->texels[i] = texels - (byte *)pheader;
             memcpy (texels, (byte *)(pskintype + 1), s);
             //		}
-            sprintf (name, "%s_%i", loadmodel->name, i);
+
+            int result = snprintf(name, 32, "%s_%i", loadmodel->name, i);
+            if(!CHECK_SAFE_PRINT(result, 32)) {
+                Sys_Error("Mod_LoadAllSkins: GL texture identifier too long!\n");
+            }
+
             pheader->gl_texturenum[i][0] = pheader->gl_texturenum[i][1] = pheader->gl_texturenum[i][2] = pheader->gl_texturenum[i][3] = GL_LoadTexture(
                     name, pheader->skinwidth, pheader->skinheight, (byte *)(pskintype + 1), true, false);
             pskintype = (daliasskintype_t *)((byte *)(pskintype + 1) + s);
@@ -1384,7 +1393,12 @@ void *Mod_LoadAllSkins(int numskins, daliasskintype_t *pskintype) {
                     pheader->texels[i] = texels - (byte *)pheader;
                     memcpy (texels, (byte *)(pskintype), s);
                 }
-                sprintf (name, "%s_%i_%i", loadmodel->name, i, j);
+
+                int result = snprintf(name, 32, "%s_%i_%i", loadmodel->name, i, j);
+                if(!CHECK_SAFE_PRINT(result, 32)) {
+                    Sys_Error("Mod_LoadAllSkins: GL texture identifier too long!\n");
+                }
+
                 pheader->gl_texturenum[i][j & 3] = GL_LoadTexture(name, pheader->skinwidth, pheader->skinheight,
                                                                   (byte *)(pskintype), true, false);
                 pskintype = (daliasskintype_t *)((byte *)(pskintype) + s);
@@ -1591,7 +1605,11 @@ void *Mod_LoadSpriteFrame(void *pin, mspriteframe_t **ppframe, int framenum) {
     pspriteframe->left = origin[0];
     pspriteframe->right = width + origin[0];
 
-    sprintf (name, "%s_%i", loadmodel->name, framenum);
+    int result = snprintf(name, 64, "%s_%i", loadmodel->name, framenum);
+    if(!CHECK_SAFE_PRINT(result, 64)) {
+        Sys_Error("Mod_LoadSpriteFrame: GL texture identifier too long!\n");
+    }
+
     pspriteframe->gl_texturenum = GL_LoadTexture(name, width, height, (byte *)(pinframe + 1), true, true);
 
     return (void *)((byte *)pinframe + sizeof(dspriteframe_t) + size);

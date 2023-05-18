@@ -1187,7 +1187,11 @@ void COM_WriteFile(char *filename, void *data, int len) {
     int handle;
     char name[MAX_OSPATH];
 
-    sprintf (name, "%s/%s", com_gamedir, filename);
+    int result = snprintf(name, MAX_OSPATH, "%s/%s", com_gamedir, filename);
+    if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+        Sys_Printf("COM_WriteFile: path is too long\n");
+        return;
+    }
 
     handle = Sys_FileOpenWrite(name);
     if(handle == -1) {
@@ -1313,7 +1317,11 @@ int COM_FindFile(char *filename, int *handle, FILE **file) {
                 }
             }
 
-            sprintf (netpath, "%s/%s", search->filename, filename);
+            int result = snprintf(netpath, MAX_OSPATH, "%s/%s", search->filename, filename);
+            if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+                Sys_Printf("COM_FindFile: path is too long (finding '%s' in '%s')\n", filename, search->filename);
+                continue;
+            }
 
             findtime = Sys_FileTime(netpath);
             if(findtime == -1) {
@@ -1321,24 +1329,20 @@ int COM_FindFile(char *filename, int *handle, FILE **file) {
             }
 
             // see if the file needs to be updated in the cache
-            if(!com_cachedir[0])
-                strcpy (cachepath, netpath);
-            else {
-#if defined(_WIN32)
-                if ((strlen(netpath) < 2) || (netpath[1] != ':'))
-                    sprintf (cachepath,"%s%s", com_cachedir, netpath);
-                else
-                    sprintf (cachepath,"%s%s", com_cachedir, netpath+2);
-#else
-                sprintf (cachepath, "%s%s", com_cachedir, netpath);
-#endif
+            if(!com_cachedir[0]) {
+                strcpy(cachepath, netpath);
+            } else {
+                result = snprintf(cachepath, MAX_OSPATH, "%s%s", com_cachedir, netpath);
+                if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+                    Sys_Printf("COM_FindFile: path is too long (during cache check on %s)\n", netpath);
+                } else {
+                    cachetime = Sys_FileTime(cachepath);
 
-                cachetime = Sys_FileTime(cachepath);
-
-                if(cachetime < findtime) {
-                    COM_CopyFile(netpath, cachepath);
+                    if(cachetime < findtime) {
+                        COM_CopyFile(netpath, cachepath);
+                    }
+                    strcpy (netpath, cachepath);
                 }
-                strcpy (netpath, cachepath);
             }
 
             Sys_Printf("FindFile: %s\n", netpath);

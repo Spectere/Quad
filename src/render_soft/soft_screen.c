@@ -601,7 +601,13 @@ void SCR_ScreenShot_f(void) {
     for(i = 0; i <= 99; i++) {
         pcxname[5] = i / 10 + '0';
         pcxname[6] = i % 10 + '0';
-        sprintf (checkname, "%s/%s", com_gamedir, pcxname);
+
+        int result = snprintf(checkname, MAX_OSPATH, "%s/%s", com_gamedir, pcxname);
+        if(!CHECK_SAFE_PRINT(result, MAX_OSPATH)) {
+            Con_Printf("SCR_ScreenShot_f: path is too long!\n");
+            return;
+        }
+
         if(Sys_FileTime(checkname) == -1) {
             break;
         }    // file doesn't exist
