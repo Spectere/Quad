@@ -23,7 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define COMMON_H
 
 #if !defined BYTE_DEFINED
-typedef unsigned char byte;
+#include <stdint.h>
+typedef uint8_t byte;
 #define BYTE_DEFINED 1
 #endif
 
