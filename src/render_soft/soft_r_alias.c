@@ -637,7 +637,7 @@ void R_AliasDrawModel(alight_t *plighting) {
     r_amodels_drawn++;
 
 // cache align
-    pfinalverts = (finalvert_t *)(((long)&finalverts[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+    pfinalverts = (finalvert_t *)(((uintptr_t)&finalverts[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
     pauxverts = &auxverts[0];
 
     paliashdr = (aliashdr_t *)Mod_Extradata(currententity->model);
