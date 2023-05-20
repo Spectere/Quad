@@ -116,7 +116,7 @@ set(SRC_RENDER_SOFT
     src/render_soft/soft_r_efrag.c      src/render_soft/soft_r_efrag.h
     src/render_soft/soft_r_light.c      src/render_soft/soft_r_light.h
                                         src/render_soft/soft_r_local.h
-    src/render_soft/soft_r_main.c       src/rendeR_soft/soft_r_main.h
+    src/render_soft/soft_r_main.c       src/render_soft/soft_r_main.h
     src/render_soft/soft_r_misc.c       src/render_soft/soft_r_misc.h
                                         src/render_soft/soft_r_shared.h
     src/render_soft/soft_r_sky.c        src/render_soft/soft_r_sky.h
@@ -146,6 +146,11 @@ set(SRC_RENDER_GL
 # Common includes/libraries.
 include_directories(SDL2::SDL2)
 link_libraries(SDL2::SDL2)
+
+# Linux needs the math library included. Windows/macOS do not.
+if(LINUX)
+    link_libraries(m)
+endif()
 
 # Common compiler settings.
 add_compile_options(-Wall -Werror)
