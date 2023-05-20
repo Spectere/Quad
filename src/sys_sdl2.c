@@ -22,15 +22,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SDL_MAIN_HANDLED
 
 #include <stddef.h>
-#include <unistd.h>
 #include <sys/stat.h>
-#include <sys/file.h>
 #include <errno.h>
 #include "sys_sdl2.h"
 
 #if defined(POSIX) || defined(MSYS)
+#include <sys/file.h>
 #include <sys/time.h>
+#include <unistd.h>
 #endif // POSIX || MSYS
+
+#ifdef MSVC
+#include <direct.h>
+#include <fcntl.h>
+#include <io.h>
+#endif // MSVC
 
 #include "host.h"
 

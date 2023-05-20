@@ -4,6 +4,9 @@
 # Finder junk.
 .DS_Store
 
+# Visual Studio stuff.
+.vs/
+
 # Build path/binaries.
 cmake-build-*/
-
+out/

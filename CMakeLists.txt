@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.22)
 set(RENDER_SOFT Quad)
 set(RENDER_GL QuadGL)
 
@@ -20,6 +20,10 @@ endif()
 
 if(WIN32 OR MINGW OR MSYS)
     add_compile_definitions(WIN32)
+endif()
+
+IF(MSVC)
+    add_compile_definitions(MSVC)
 endif()
 
 set(SRC_COMMON
@@ -153,7 +157,13 @@ if(LINUX)
 endif()
 
 # Common compiler settings.
-add_compile_options(-Wall -Werror)
+if(MSVC)
+    # MSVC is just built different. :)
+    add_compile_options(/W1 /WX)
+else()
+    # This works fine for both gcc and clang.
+    add_compile_options(-Wall -Werror)
+endif()
 
 ###                     ################################################################################################
 ###  SOFTWARE RENDERER  ################################################################################################
