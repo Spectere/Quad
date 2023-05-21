@@ -33,9 +33,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif // POSIX || MSYS
 
 #ifdef MSVC
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif // !WIN32_LEAN_AND_MEAN
 #include <direct.h>
 #include <fcntl.h>
 #include <io.h>
+#include <Windows.h>
 #endif // MSVC
 
 #include "host.h"
@@ -46,6 +50,10 @@ char *basedir = ".";
 
 qboolean isDedicated = false;
 int no_stdout = 0;
+
+#ifdef WIN32
+LARGE_INTEGER qpc_frequency;
+#endif // WIN32
 
 int Sys_FileOpenRead(char *path, int *handle) {
     int	h;
@@ -103,11 +111,15 @@ int	Sys_FileTime(char *path) {
 }
 
 void Sys_mkdir(char *path) {
+    int result;
 #ifdef WIN32
-    mkdir(path);
+    result = mkdir(path);
 #else
-    mkdir(path, 0777);
+    result = mkdir(path, 0777);
 #endif // WIN32
+    if(result) {
+        Sys_Printf("Sys_mkdir: failed with code (%i).\n", result);
+    }
 }
 
 void Sys_Error(char *error, ...) {
@@ -173,6 +185,15 @@ double Sys_FloatTime(void) {
     }
 
     return (tp.tv_sec - secbase) + tp.tv_usec / 1000000.0;
+#elif defined(WIN32)
+    // Win32 API time implementation.
+    LARGE_INTEGER counter;
+    double seconds;
+    if(!QueryPerformanceCounter(&counter)) {
+        DWORD error = GetLastError();
+        Sys_Error("Sys_FloatTime: QueryPerformanceCounter returned an error (%i).\n", error);
+    }
+	return (double)counter.QuadPart / (double)qpc_frequency.QuadPart;
 #else
     // SDL time implementation.
     return (double)SDL_GetTicks64() / 1000;
@@ -246,6 +267,14 @@ int main(int argc, char** argv) {
     } else {
         printf("Quad -- Version %0.2f\n", QUAD_VERSION);
     }
+
+#ifdef WIN32
+	// Fetch QPC frequency.
+    if(!QueryPerformanceFrequency(&qpc_frequency)) {
+        DWORD error = GetLastError();
+        Sys_Error("main: Unable to fetch QueryPerformanceCounter frequency (%i).\n", error);
+    }
+#endif // WIN32
 
     time_prev = Sys_FloatTime() - 0.1;
     while(1) {
