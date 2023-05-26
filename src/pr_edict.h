@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 edict_t *ED_Alloc(void);
 void ED_Free(edict_t *ed);
 void ED_LoadFromFile(char *data);
-char *ED_NewString(char *string);  // returns a copy of the string allocated from the server's string heap
+int ED_NewString(char *string);  // Returns an index of the new string in the non-progs string list.
 char *ED_ParseEdict(char *data, edict_t *ent);
 void ED_ParseGlobals(char *data);
 void ED_Print(edict_t *ed);
@@ -38,7 +38,9 @@ void ED_WriteGlobals(FILE *f);
 
 eval_t *GetEdictFieldValue(edict_t *ed, char *field);
 
+char* PR_GetString(int offset);
 void PR_Init(void);
 void PR_LoadProgs(void);
+int PR_NewNonProgsString(char *string);
 
 #endif // !PR_EDICT_H

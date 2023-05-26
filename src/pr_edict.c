@@ -22,17 +22,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #include "host.h"
+#include "pr_edict.h"
 #include "pr_exec.h"
+#include "zone.h"
 
 dprograms_t *progs;
 dfunction_t *pr_functions;
-char *pr_strings;
 ddef_t *pr_fielddefs;
 ddef_t *pr_globaldefs;
 dstatement_t *pr_statements;
 globalvars_t *pr_global_struct;
 float *pr_globals;            // same as pr_global_struct
 int pr_edict_size;    // in bytes
+
+#define NONPROGSSTR_ALLOC_SIZE 64
+
+char *pr_strings;
+int pr_strings_length;
+char **pr_nonprogsstr = NULL;
+int pr_nonprogsstr_num = 0;
+int pr_nonprogsstr_length = 0;
 
 unsigned short pr_crc;
 
@@ -186,7 +195,7 @@ ddef_t *ED_FindField(char *name) {
 
     for(i = 0; i < progs->numfielddefs; i++) {
         def = &pr_fielddefs[i];
-        if(!strcmp(pr_strings + def->s_name, name)) {
+        if(!strcmp(PR_GetString(def->s_name), name)) {
             return def;
         }
     }
@@ -204,7 +213,7 @@ ddef_t *ED_FindGlobal(char *name) {
 
     for(i = 0; i < progs->numglobaldefs; i++) {
         def = &pr_globaldefs[i];
-        if(!strcmp(pr_strings + def->s_name, name)) {
+        if(!strcmp(PR_GetString(def->s_name), name)) {
             return def;
         }
     }
@@ -222,7 +231,7 @@ dfunction_t *ED_FindFunction(char *name) {
 
     for(i = 0; i < progs->numfunctions; i++) {
         func = &pr_functions[i];
-        if(!strcmp(pr_strings + func->s_name, name)) {
+        if(!strcmp(PR_GetString(func->s_name), name)) {
             return func;
         }
     }
@@ -273,18 +282,18 @@ char *PR_ValueString(etype_t type, eval_t *val) {
 
     switch(type) {
         case ev_string:
-            sprintf (line, "%s", pr_strings + val->string);
+            sprintf (line, "%s", PR_GetString(val->string));
             break;
         case ev_entity:
             sprintf (line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)));
             break;
         case ev_function:
             f = pr_functions + val->function;
-            sprintf (line, "%s()", pr_strings + f->s_name);
+            sprintf (line, "%s()", PR_GetString(f->s_name));
             break;
         case ev_field:
             def = ED_FieldAtOfs(val->_int);
-            sprintf (line, ".%s", pr_strings + def->s_name);
+            sprintf (line, ".%s", PR_GetString(def->s_name));
             break;
         case ev_void:
             sprintf (line, "void");
@@ -323,18 +332,18 @@ char *PR_UglyValueString(etype_t type, eval_t *val) {
 
     switch(type) {
         case ev_string:
-            sprintf (line, "%s", pr_strings + val->string);
+            sprintf (line, "%s", PR_GetString(val->string));
             break;
         case ev_entity:
             sprintf (line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)));
             break;
         case ev_function:
             f = pr_functions + val->function;
-            sprintf (line, "%s", pr_strings + f->s_name);
+            sprintf (line, "%s", PR_GetString(f->s_name));
             break;
         case ev_field:
             def = ED_FieldAtOfs(val->_int);
-            sprintf (line, "%s", pr_strings + def->s_name);
+            sprintf (line, "%s", PR_GetString(def->s_name));
             break;
         case ev_void:
             sprintf (line, "void");
@@ -374,7 +383,7 @@ char *PR_GlobalString(int ofs) {
         sprintf (line, "%i(\?\?\?)", ofs);
     } else {
         s = PR_ValueString(def->type, val);
-        sprintf (line, "%i(%s)%s", ofs, pr_strings + def->s_name, s);
+        sprintf (line, "%i(%s)%s", ofs, PR_GetString(def->s_name), s);
     }
 
     i = strlen(line);
@@ -395,7 +404,7 @@ char *PR_GlobalStringNoContents(int ofs) {
     if(!def) {
         sprintf(line, "%i(\?\?\?)", ofs);
     } else {
-        sprintf(line, "%i(%s)", ofs, pr_strings + def->s_name);
+        sprintf(line, "%i(%s)", ofs, PR_GetString(def->s_name));
     }
 
     i = strlen(line);
@@ -430,7 +439,7 @@ void ED_Print(edict_t *ed) {
     Con_Printf("\nEDICT %i:\n", NUM_FOR_EDICT(ed));
     for(i = 1; i < progs->numfielddefs; i++) {
         d = &pr_fielddefs[i];
-        name = pr_strings + d->s_name;
+        name = PR_GetString(d->s_name);
         if(name[strlen(name) - 2] == '_') {
             continue;
         }    // skip _x, _y, _z vars
@@ -482,7 +491,7 @@ void ED_Write(FILE *f, edict_t *ed) {
 
     for(i = 1; i < progs->numfielddefs; i++) {
         d = &pr_fielddefs[i];
-        name = pr_strings + d->s_name;
+        name = PR_GetString(d->s_name);
         if(name[strlen(name) - 2] == '_') {
             continue;
         }    // skip _x, _y, _z vars
@@ -615,7 +624,7 @@ void ED_WriteGlobals(FILE *f) {
             continue;
         }
 
-        name = pr_strings + def->s_name;
+        name = PR_GetString(def->s_name);
         fprintf(f, "\"%s\" ", name);
         fprintf(f, "\"%s\"\n", PR_UglyValueString(type, (eval_t *)&pr_globals[def->ofs]));
     }
@@ -673,13 +682,16 @@ void ED_ParseGlobals(char *data) {
 ED_NewString
 =============
 */
-char *ED_NewString(char *string) {
+int ED_NewString(char *string) {
     char *new, *new_p;
     int i, l;
+    int index;
 
     l = strlen(string) + 1;
     new = Hunk_Alloc(l);
     new_p = new;
+
+    index = PR_NewNonProgsString(new);
 
     for(i = 0; i < l; i++) {
         if(string[i] == '\\' && i < l - 1) {
@@ -694,7 +706,7 @@ char *ED_NewString(char *string) {
         }
     }
 
-    return new;
+    return index;
 }
 
 /*
@@ -717,7 +729,7 @@ qboolean ED_ParseEpair(void *base, ddef_t *key, char *s) {
 
     switch(key->type & ~DEF_SAVEGLOBAL) {
         case ev_string:
-            *(string_t *)d = ED_NewString(s) - pr_strings;
+            *(string_t *)d = ED_NewString(s);
             break;
 
         case ev_float:
@@ -931,7 +943,7 @@ void ED_LoadFromFile(char *data) {
         }
 
         // look for the spawn function
-        func = ED_FindFunction(pr_strings + ent->v.classname);
+        func = ED_FindFunction(PR_GetString(ent->v.classname));
 
         if(!func) {
             Con_Printf("No spawn function for:\n");
@@ -985,10 +997,20 @@ void PR_LoadProgs(void) {
     }
 
     pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
-    pr_strings = (char *)progs + progs->ofs_strings;
     pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
     pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
     pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
+
+    // If the non-progs string store is allocated, clear it out first.
+    if(pr_nonprogsstr) {
+        Z_Free(pr_nonprogsstr);
+        pr_nonprogsstr = NULL;
+        pr_nonprogsstr_num = 0;
+        pr_nonprogsstr_length = 0;
+    }
+
+    pr_strings = (char *)progs + progs->ofs_strings;
+    pr_strings_length = progs->numstrings;
 
     pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
     pr_globals = (float *)pr_global_struct;
@@ -1072,4 +1094,48 @@ int NUM_FOR_EDICT(edict_t *e) {
         Sys_Error("NUM_FOR_EDICT: bad pointer");
     }
     return b;
+}
+
+char* PR_GetString(int offset) {
+    if(offset >= 0 && offset < pr_strings_length) {
+        return pr_strings + offset;
+    } else {
+        return pr_nonprogsstr[-offset];
+    }
+}
+
+int PR_NewNonProgsString(char *string) {
+    int alloc_length;
+
+    // Check to see if the string is already defined.
+    for(int i = 0; i < pr_nonprogsstr_num; i++) {
+        if(pr_nonprogsstr[i] == string) {
+            return -i;
+        }
+    }
+
+    if(pr_nonprogsstr_length == 0) {
+        // Allocate space for the non-progs strings.
+        pr_nonprogsstr_length += NONPROGSSTR_ALLOC_SIZE;
+        alloc_length = pr_nonprogsstr_length * sizeof(char*);
+        Con_DPrintf("PR_NewNonProgsString: %i bytes allocated\n", alloc_length);
+        pr_nonprogsstr = (char**)Z_Malloc(alloc_length);
+    } else if(pr_nonprogsstr_num == pr_nonprogsstr_length) {
+        // We need more space!!! Allocate a larger object and copy the existing contents over.
+        char **pr_nonprogsstr_temp;
+        int pr_nonprogsstr_newlength = pr_nonprogsstr_length + NONPROGSSTR_ALLOC_SIZE;
+
+        alloc_length = pr_nonprogsstr_newlength * sizeof(char*);
+        Con_DPrintf("PR_NewNonProgsString: reallocating (%i bytes)\n", alloc_length);
+        pr_nonprogsstr_temp = (char**)Z_Malloc(alloc_length);
+        Q_memcpy(pr_nonprogsstr_temp, pr_nonprogsstr, pr_nonprogsstr_length * sizeof(char*));
+
+        // Clean up the old object and reassign the pointers.
+        Z_Free(pr_nonprogsstr);
+        pr_nonprogsstr = pr_nonprogsstr_temp;
+        pr_nonprogsstr_length = pr_nonprogsstr_newlength;
+    }
+
+    pr_nonprogsstr[pr_nonprogsstr_num++] = string;
+    return -(pr_nonprogsstr_num - 1);
 }
