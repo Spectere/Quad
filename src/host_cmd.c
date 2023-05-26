@@ -805,7 +805,7 @@ Host_Color_f
 */
 void Host_Color_f(void) {
     int top, bottom;
-    int playercolor;
+    int local_playercolor;
 
     if(Cmd_Argc() == 1) {
         Con_Printf("\"color\" is \"%i %i\"\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 0x0f);
@@ -829,17 +829,17 @@ void Host_Color_f(void) {
         bottom = 13;
     }
 
-    playercolor = top * 16 + bottom;
+    local_playercolor = top * 16 + bottom;
 
     if(cmd_source == src_command) {
-        Cvar_SetValue("_cl_color", playercolor);
+        Cvar_SetValue("_cl_color", local_playercolor);
         if(cls.state == ca_connected) {
             Cmd_ForwardToServer();
         }
         return;
     }
 
-    host_client->colors = playercolor;
+    host_client->colors = local_playercolor;
     host_client->edict->v.team = bottom + 1;
 
 // send notification to all clients

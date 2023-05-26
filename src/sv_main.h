@@ -32,7 +32,7 @@ void SV_SaveSpawnparms();
 void SV_SendClientMessages(void);
 void SV_SpawnServer(char *server);
 void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
-void SV_StartSound(edict_t *entity, int channel, char *sample, int volume, float attenuation);
+void SV_StartSound(edict_t *entity, int channel, char *sample, int sys_volume, float attenuation);
 void SV_WriteClientdataToMessage(edict_t *ent, sizebuf_t *msg);
 
 #endif // !SV_MAIN_H

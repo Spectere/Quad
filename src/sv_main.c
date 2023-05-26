@@ -116,19 +116,19 @@ weapon, feet, etc.
 Channel 0 is an auto-allocate channel, the others override anything
 allready running on that entity/channel pair.
 
-An attenuation of 0 will play full volume everywhere in the level.
+An attenuation of 0 will play full sys_volume everywhere in the level.
 Larger attenuations will drop off.  (max 4 attenuation)
 
 ==================
 */
-void SV_StartSound(edict_t *entity, int channel, char *sample, int volume, float attenuation) {
+void SV_StartSound(edict_t *entity, int channel, char *sample, int sys_volume, float attenuation) {
     int sound_num;
     int field_mask;
     int i;
     int ent;
 
-    if(volume < 0 || volume > 255) {
-        Sys_Error("SV_StartSound: volume = %i", volume);
+    if(sys_volume < 0 || sys_volume > 255) {
+        Sys_Error("SV_StartSound: sys_volume = %i", sys_volume);
     }
 
     if(attenuation < 0 || attenuation > 4) {
@@ -160,7 +160,7 @@ void SV_StartSound(edict_t *entity, int channel, char *sample, int volume, float
     channel = (ent << 3) | channel;
 
     field_mask = 0;
-    if(volume != DEFAULT_SOUND_PACKET_VOLUME) {
+    if(sys_volume != DEFAULT_SOUND_PACKET_VOLUME) {
         field_mask |= SND_VOLUME;
     }
     if(attenuation != DEFAULT_SOUND_PACKET_ATTENUATION) {
@@ -171,7 +171,7 @@ void SV_StartSound(edict_t *entity, int channel, char *sample, int volume, float
     MSG_WriteByte(&sv.datagram, svc_sound);
     MSG_WriteByte(&sv.datagram, field_mask);
     if(field_mask & SND_VOLUME) {
-        MSG_WriteByte(&sv.datagram, volume);
+        MSG_WriteByte(&sv.datagram, sys_volume);
     }
     if(field_mask & SND_ATTENUATION) {
         MSG_WriteByte(&sv.datagram, attenuation * 64);

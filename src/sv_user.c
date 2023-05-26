@@ -236,8 +236,8 @@ SV_WaterMove
 */
 void SV_WaterMove(void) {
     int i;
-    vec3_t wishvel;
-    float speed, newspeed, wishspeed, addspeed, accelspeed;
+    vec3_t targetvel;
+    float speed, newspeed, targetspeed, addspeed, accelspeed;
 
 //
 // user intentions
@@ -245,21 +245,21 @@ void SV_WaterMove(void) {
     AngleVectors(sv_player->v.v_angle, forward, right, up);
 
     for(i = 0; i < 3; i++) {
-        wishvel[i] = forward[i] * cmd.forwardmove + right[i] * cmd.sidemove;
+        targetvel[i] = forward[i] * cmd.forwardmove + right[i] * cmd.sidemove;
     }
 
     if(!cmd.forwardmove && !cmd.sidemove && !cmd.upmove) {
-        wishvel[2] -= 60;        // drift towards bottom
+        targetvel[2] -= 60;        // drift towards bottom
     } else {
-        wishvel[2] += cmd.upmove;
+        targetvel[2] += cmd.upmove;
     }
 
-    wishspeed = Length(wishvel);
-    if(wishspeed > sv_maxspeed.value) {
-        VectorScale(wishvel, sv_maxspeed.value / wishspeed, wishvel);
-        wishspeed = sv_maxspeed.value;
+    targetspeed = Length(targetvel);
+    if(targetspeed > sv_maxspeed.value) {
+        VectorScale(targetvel, sv_maxspeed.value / targetspeed, targetvel);
+        targetspeed = sv_maxspeed.value;
     }
-    wishspeed *= 0.7;
+    targetspeed *= 0.7;
 
 //
 // water friction
@@ -278,23 +278,23 @@ void SV_WaterMove(void) {
 //
 // water acceleration
 //
-    if(!wishspeed) {
+    if(!targetspeed) {
         return;
     }
 
-    addspeed = wishspeed - newspeed;
+    addspeed = targetspeed - newspeed;
     if(addspeed <= 0) {
         return;
     }
 
-    VectorNormalize(wishvel);
-    accelspeed = sv_accelerate.value * wishspeed * host_frametime;
+    VectorNormalize(targetvel);
+    accelspeed = sv_accelerate.value * targetspeed * host_frametime;
     if(accelspeed > addspeed) {
         accelspeed = addspeed;
     }
 
     for(i = 0; i < 3; i++) {
-        velocity[i] += accelspeed * wishvel[i];
+        velocity[i] += accelspeed * targetvel[i];
     }
 }
 
@@ -458,7 +458,7 @@ Returns false if the client should be killed
 */
 qboolean SV_ReadClientMessage(void) {
     int ret;
-    int cmd;
+    int cl_cmd;
     char *s;
 
     do {
@@ -484,9 +484,9 @@ qboolean SV_ReadClientMessage(void) {
                 return false;
             }
 
-            cmd = MSG_ReadChar();
+            cl_cmd = MSG_ReadChar();
 
-            switch(cmd) {
+            switch(cl_cmd) {
                 case -1:
                     goto nextmsg;        // end of message
 

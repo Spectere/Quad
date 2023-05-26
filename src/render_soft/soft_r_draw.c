@@ -352,7 +352,7 @@ void R_RenderFace(msurface_t *fa, int clipflags) {
     mplane_t *pplane;
     float distinv;
     vec3_t p_normal;
-    medge_t *pedges, tedge;
+    medge_t *local_pedges, local_tedges;
     clipplane_t *pclip;
 
 // skip out if no more surfs
@@ -384,14 +384,14 @@ void R_RenderFace(msurface_t *fa, int clipflags) {
     r_nearzi = 0;
     r_nearzionly = false;
     makeleftedge = makerightedge = false;
-    pedges = currententity->model->edges;
+    local_pedges = currententity->model->edges;
     r_lastvertvalid = false;
 
     for(i = 0; i < fa->numedges; i++) {
         lindex = currententity->model->surfedges[fa->firstedge + i];
 
         if(lindex > 0) {
-            r_pedge = &pedges[lindex];
+            r_pedge = &local_pedges[lindex];
 
             // if the edge is cached, we can just reuse the edge
             if(!insubmodel) {
@@ -425,7 +425,7 @@ void R_RenderFace(msurface_t *fa, int clipflags) {
             r_lastvertvalid = true;
         } else {
             lindex = -lindex;
-            r_pedge = &pedges[lindex];
+            r_pedge = &local_pedges[lindex];
             // if the edge is cached, we can just reuse the edge
             if(!insubmodel) {
                 if(r_pedge->cachededgeoffset & FULLY_CLIPPED_CACHED) {
@@ -465,14 +465,14 @@ void R_RenderFace(msurface_t *fa, int clipflags) {
 // FIXME: faster to do in screen space?
 // FIXME: share clipped edges?
     if(makeleftedge) {
-        r_pedge = &tedge;
+        r_pedge = &local_tedges;
         r_lastvertvalid = false;
         R_ClipEdge(&r_leftexit, &r_leftenter, pclip->next);
     }
 
 // if there was a clip off the right edge, get the right r_nearzi
     if(makerightedge) {
-        r_pedge = &tedge;
+        r_pedge = &local_tedges;
         r_lastvertvalid = false;
         r_nearzionly = true;
         R_ClipEdge(&r_rightexit, &r_rightenter, view_clipplanes[1].next);

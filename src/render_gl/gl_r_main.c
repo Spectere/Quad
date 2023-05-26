@@ -148,15 +148,15 @@ void R_RotateForEntity(entity_t *e) {
 R_GetSpriteFrame
 ================
 */
-mspriteframe_t *R_GetSpriteFrame(entity_t *currententity) {
+mspriteframe_t *R_GetSpriteFrame(entity_t *spr_entity) {
     msprite_t *psprite;
     mspritegroup_t *pspritegroup;
     mspriteframe_t *pspriteframe;
     int i, numframes, frame;
     float *pintervals, fullinterval, targettime, time;
 
-    psprite = currententity->model->cache.data;
-    frame = currententity->frame;
+    psprite = spr_entity->model->cache.data;
+    frame = spr_entity->frame;
 
     if((frame >= psprite->numframes) || (frame < 0)) {
         Con_Printf("R_DrawSprite: no such frame %d\n", frame);
@@ -171,7 +171,7 @@ mspriteframe_t *R_GetSpriteFrame(entity_t *currententity) {
         numframes = pspritegroup->numframes;
         fullinterval = pintervals[numframes - 1];
 
-        time = cl.time + currententity->syncbase;
+        time = cl.time + spr_entity->syncbase;
 
         // when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
         // are positive, so we don't have to worry about division by 0
@@ -615,7 +615,7 @@ void R_DrawViewModel(void) {
     vec3_t dist;
     float add;
     dlight_t *dl;
-    int ambientlight, shadelight;
+    int model_ambientlight, model_shadelight;
 
     if(!r_drawviewmodel.value) {
         return;
@@ -651,8 +651,8 @@ void R_DrawViewModel(void) {
     if(j < 24) {
         j = 24;
     }        // allways give some light on gun
-    ambientlight = j;
-    shadelight = j;
+    model_ambientlight = j;
+    model_shadelight = j;
 
 // add dynamic lights		
     for(lnum = 0; lnum < MAX_DLIGHTS; lnum++) {
@@ -667,11 +667,11 @@ void R_DrawViewModel(void) {
         VectorSubtract (currententity->origin, dl->origin, dist);
         add = dl->radius - Length(dist);
         if(add > 0)
-            ambientlight += add;
+            model_ambientlight += add;
     }
 
-    ambient[0] = ambient[1] = ambient[2] = ambient[3] = (float)ambientlight / 128;
-    diffuse[0] = diffuse[1] = diffuse[2] = diffuse[3] = (float)shadelight / 128;
+    ambient[0] = ambient[1] = ambient[2] = ambient[3] = (float)model_ambientlight / 128;
+    diffuse[0] = diffuse[1] = diffuse[2] = diffuse[3] = (float)model_shadelight / 128;
 
     // hack the depth range to prevent view model from poking into walls
     glDepthRange(gldepthmin, gldepthmin + 0.3 * (gldepthmax - gldepthmin));

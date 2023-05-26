@@ -293,7 +293,7 @@ void V_ParseDamage(void) {
     int armor, blood;
     vec3_t from;
     int i;
-    vec3_t forward, right, up;
+    vec3_t dmg_forward, dmg_right, dmg_up;
     entity_t *ent;
     float side;
     float count;
@@ -341,12 +341,12 @@ void V_ParseDamage(void) {
     VectorSubtract (from, ent->origin, from);
     VectorNormalize(from);
 
-    AngleVectors(ent->angles, forward, right, up);
+    AngleVectors(ent->angles, dmg_forward, dmg_right, dmg_up);
 
-    side = DotProduct (from, right);
+    side = DotProduct (from, dmg_right);
     v_dmg_roll = count * side * v_kickroll.value;
 
-    side = DotProduct (from, forward);
+    side = DotProduct (from, dmg_forward);
     v_dmg_pitch = count * side * v_kickpitch.value;
 
     v_dmg_time = v_kicktime.value;
@@ -818,7 +818,7 @@ V_CalcRefdef
 void V_CalcRefdef(void) {
     entity_t *ent, *view;
     int i;
-    vec3_t forward, right, up;
+    vec3_t vec_forward, vec_right, vec_up;
     vec3_t angles;
     float bob;
     static float oldz = 0;
@@ -862,15 +862,15 @@ void V_CalcRefdef(void) {
     angles[YAW] = ent->angles[YAW];
     angles[ROLL] = ent->angles[ROLL];
 
-    AngleVectors(angles, forward, right, up);
+    AngleVectors(angles, vec_forward, vec_right, vec_up);
 
     for(i = 0; i < 3; i++) {
-        r_refdef.vieworg[i] += scr_ofsx.value * forward[i] + scr_ofsy.value * right[i] + scr_ofsz.value * up[i];
+        r_refdef.vieworg[i] += scr_ofsx.value * vec_forward[i] + scr_ofsy.value * vec_right[i] + scr_ofsz.value * vec_up[i];
     }
 
     V_BoundOffsets();
 
-// set up gun position
+// set vec_up gun position
     VectorCopy (cl.viewangles, view->angles);
 
     CalcGunAngle();
@@ -879,9 +879,9 @@ void V_CalcRefdef(void) {
     view->origin[2] += cl.viewheight;
 
     for(i = 0; i < 3; i++) {
-        view->origin[i] += forward[i] * bob * 0.4;
-//		view->origin[i] += right[i]*bob*0.4;
-//		view->origin[i] += up[i]*bob*0.8;
+        view->origin[i] += vec_forward[i] * bob * 0.4;
+//		view->origin[i] += vec_right[i]*bob*0.4;
+//		view->origin[i] += vec_up[i]*bob*0.8;
     }
     view->origin[2] += bob;
 
@@ -901,7 +901,7 @@ void V_CalcRefdef(void) {
     view->frame = cl.stats[STAT_WEAPONFRAME];
     view->colormap = vid.colormap;
 
-// set up the refresh position
+// set vec_up the refresh position
     VectorAdd (r_refdef.viewangles, cl.punchangle, r_refdef.viewangles);
 
 // smooth out stair step ups
