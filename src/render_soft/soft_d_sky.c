@@ -63,11 +63,8 @@ D_DrawSkyScans8
 void D_DrawSkyScans8(espan_t *pspan) {
     int count, spancount, u, v;
     unsigned char *pdest;
-    fixed16_t s, t, snext, tnext, sstep, tstep;
+    fixed16_t s, t, snext = 0, tnext = 0, sstep = 0, tstep = 0;
     int spancountminus1;
-
-    sstep = 0;    // keep compiler happy
-    tstep = 0;    // ditto
 
     do {
         pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
