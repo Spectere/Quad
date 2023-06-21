@@ -71,7 +71,7 @@ qboolean VID_AllocBuffers(int width, int height);
 
 // TODO: Temporary stuff that should eventually be deleted.
 const int VID_WIDTH = 1280;
-const int VID_HEIGHT = 960;
+const int VID_HEIGHT = 720;
 
 // Newer stuff that probably shouldn't be deleted. :)
 SDL_Window* sdl_window = NULL;
@@ -247,7 +247,7 @@ void VID_Init(unsigned char *palette) {
     vid.conwidth &= 0xfff8; // make it a multiple of eight
 
     // pick a conheight that matches with correct aspect
-    vid.conheight = vid.conwidth*3 / 4;
+    vid.conheight = vid.conwidth * VID_HEIGHT / VID_WIDTH;
 
     vid.maxwarpwidth = WARP_WIDTH;
     vid.maxwarpheight = WARP_HEIGHT;
@@ -259,7 +259,7 @@ void VID_Init(unsigned char *palette) {
     vid_buffer = malloc(VID_WIDTH * VID_HEIGHT);
     vid.buffer = vid.conbuffer = vid.direct = vid_buffer;
     vid.rowbytes = vid.conrowbytes = VID_WIDTH;
-    vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+    vid.aspect = ((float)vid.height / (float)vid.width) * ((float)vid.width / (float)vid.height);
 
     VID_AllocBuffers(VID_WIDTH, VID_HEIGHT);
     D_InitCaches(vid_surfcache, vid_surfcachesize);
