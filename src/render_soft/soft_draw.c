@@ -728,32 +728,3 @@ void Draw_FadeScreen(void) {
 
     S_ExtraUpdate();
 }
-
-//=============================================================================
-
-/*
-================
-Draw_BeginDisc
-
-Draws the little blue disc in the corner of the screen.
-Call before beginning any disc IO.
-================
-*/
-void Draw_BeginDisc(void) {
-
-    D_BeginDirectRect(vid.width - 24, 0, draw_disc->data, 24, 24);
-}
-
-/*
-================
-Draw_EndDisc
-
-Erases the disc icon.
-Call after completing any disc IO
-================
-*/
-void Draw_EndDisc(void) {
-
-    D_EndDirectRect(vid.width - 24, 0, 24, 24);
-}
-

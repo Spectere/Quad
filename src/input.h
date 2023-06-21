@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INPUT_H
 #define INPUT_H
 
+extern cvar_t in_mouse;
+extern cvar_t in_mlook_lock;
+extern qboolean ignore_mouse_input;
+
 void IN_Init(void);
 
 void IN_Shutdown(void);
@@ -34,5 +38,7 @@ void IN_Move(usercmd_t *cmd);
 
 void IN_ClearStates(void);
 // restores all button and position states to defaults
+
+void IN_MouseCapture(qboolean capture);
 
 #endif // !INPUT_H

@@ -30,6 +30,12 @@
 #include "cl_input.h"
 #include "host_cmd.h"
 
+// Input
+qboolean ignore_mouse_input = false;
+qboolean mouse_captured = false;
+cvar_t in_mouse = { "in_mouse", "1", true };
+cvar_t in_mlook_lock = { "in_mlook_lock", "1", true };
+
 // A jumble of globals, locals, defines, and cvars, copied from gl_vidnt.c.
 // TODO: A lot has changed in the past few decades. Let's see how many of these we can axe.
 #define WARP_WIDTH		320
@@ -72,17 +78,6 @@ SDL_Window* sdl_window = NULL;
 SDL_GLContext sdl_gl_context = NULL;
 float mouse_x = 0;
 float mouse_y = 0;
-
-
-/*
- * Miscellaneous functions we might not need to implement.
- */
-void VID_HandlePause(qboolean pause) {}
-
-void D_BeginDirectRect(int x, int y, byte *pbitmap, int width, int height) {}
-
-void D_EndDirectRect(int x, int y, int width, int height) {}
-
 
 /*
  * General video functions.
@@ -146,6 +141,9 @@ void VID_ShiftPalette(unsigned char *palette) {
 }
 
 void VID_Init(unsigned char *palette) {
+    Cvar_RegisterVariable(&in_mouse);
+    Cvar_RegisterVariable(&in_mlook_lock);
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         Sys_Error("Unable to initialize SDL2.\n");
     }
@@ -238,7 +236,7 @@ void VID_Init(unsigned char *palette) {
     }
 #endif // RENDER_GL
 
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    IN_MouseCapture(in_mouse.value > 0.0f);
 
     // Populate the vid object.
     vid.width = VID_WIDTH;
@@ -283,7 +281,7 @@ void VID_Shutdown(void) {
     }
 #endif // RENDER_SOFT
 
-    SDL_SetRelativeMouseMode(SDL_FALSE);
+    IN_MouseCapture(false);
 
     if(sdl_window != NULL) {
         SDL_DestroyWindow(sdl_window);
@@ -309,6 +307,17 @@ void IN_Shutdown(void) {
 void IN_Commands(void) {}
 
 void IN_Move(usercmd_t *cmd) {
+    float mouse_var;
+
+    mouse_var = mouse_captured ? 1.0f : 0.0f;
+    if(mouse_var != in_mouse.value) {
+        IN_MouseCapture(in_mouse.value > 0.0f);
+    }
+
+    if(!mouse_captured || ignore_mouse_input) {
+        return;
+    }
+
     mouse_x *= sensitivity.value;
     mouse_y *= sensitivity.value;
 
@@ -318,11 +327,11 @@ void IN_Move(usercmd_t *cmd) {
         cl.viewangles[YAW] -= m_yaw.value * mouse_x;
     }
 
-    if(in_mlook.state & 1) {
+    if(in_mlook.state & 1 || in_mlook_lock.value) {
         V_StopPitchDrift();
     }
 
-    if((in_mlook.state & 1) && !(in_strafe.state & 1)) {
+    if((in_mlook.state & 1 || in_mlook_lock.value) && !(in_strafe.state & 1)) {
         cl.viewangles[PITCH] += m_pitch.value * mouse_y;
         if(cl.viewangles[PITCH] > 80) {
             cl.viewangles[PITCH] = 80;
@@ -339,6 +348,11 @@ void IN_Move(usercmd_t *cmd) {
     }
 
     mouse_x = mouse_y = 0.0f;
+}
+
+void IN_MouseCapture(qboolean captured) {
+    mouse_captured = captured;
+    SDL_SetRelativeMouseMode(captured ? SDL_TRUE : SDL_FALSE);
 }
 
 int IN_TranslateKeycode(SDL_Keycode keycode) {

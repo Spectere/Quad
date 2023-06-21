@@ -60,6 +60,8 @@ extern unsigned d_8to24table[256];
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
 
+extern qboolean mouse_captured;
+
 void VID_SetPalette(unsigned char *palette);
 // called at startup and after any gamma correction
 
@@ -76,8 +78,5 @@ void VID_Shutdown(void);
 
 void VID_Update(vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
-
-void VID_HandlePause(qboolean pause);
-// called only on Win32, when pause happens, so the mouse can be released
 
 #endif // !VID_H

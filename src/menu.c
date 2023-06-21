@@ -274,6 +274,7 @@ void M_Menu_Main_f(void) {
     key_dest = key_menu;
     m_state = m_main;
     m_entersound = true;
+    ignore_mouse_input = true;
 }
 
 void M_Main_Draw(void) {
@@ -295,6 +296,7 @@ void M_Main_Key(int key) {
         case K_ESCAPE:
             key_dest = key_game;
             m_state = m_none;
+            ignore_mouse_input = false;
             cls.demonum = m_save_demonum;
             if(cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected) {
                 CL_NextDemo();
@@ -352,6 +354,7 @@ void M_Menu_SinglePlayer_f(void) {
     key_dest = key_menu;
     m_state = m_singleplayer;
     m_entersound = true;
+    ignore_mouse_input = true;
 }
 
 void M_SinglePlayer_Draw(void) {
@@ -404,6 +407,7 @@ void M_SinglePlayer_Key(int key) {
                     }
                     Cbuf_AddText("maxplayers 1\n");
                     Cbuf_AddText("map start\n");
+                    ignore_mouse_input = false;
                     break;
 
                 case 1:
@@ -465,6 +469,7 @@ void M_Menu_Load_f(void) {
     m_entersound = true;
     m_state = m_load;
     key_dest = key_menu;
+    ignore_mouse_input = true;
     M_ScanSaves();
 }
 
@@ -481,6 +486,7 @@ void M_Menu_Save_f(void) {
     m_entersound = true;
     m_state = m_save;
     key_dest = key_menu;
+    ignore_mouse_input = true;
     M_ScanSaves();
 }
 
@@ -527,6 +533,7 @@ void M_Load_Key(int k) {
             }
             m_state = m_none;
             key_dest = key_game;
+            ignore_mouse_input = false;
 
             // Host_Loadgame_f can't bring up the loading plaque because too much
             // stack space has been used, so do it now
@@ -565,6 +572,7 @@ void M_Save_Key(int k) {
         case K_ENTER:
             m_state = m_none;
             key_dest = key_game;
+            ignore_mouse_input = false;
             Cbuf_AddText(va("save s%i\n", load_cursor));
             return;
 
@@ -598,6 +606,7 @@ void M_Menu_MultiPlayer_f(void) {
     key_dest = key_menu;
     m_state = m_multiplayer;
     m_entersound = true;
+    ignore_mouse_input = true;
 }
 
 void M_MultiPlayer_Draw(void) {
@@ -684,6 +693,7 @@ void M_Menu_Setup_f(void) {
     Q_strcpy(setup_hostname, hostname.string);
     setup_top = setup_oldtop = ((int)cl_color.value) >> 4;
     setup_bottom = setup_oldbottom = ((int)cl_color.value) & 15;
+    ignore_mouse_input = true;
 }
 
 void M_Setup_Draw(void) {
@@ -864,6 +874,7 @@ void M_Menu_Net_f(void) {
     m_state = m_net;
     m_entersound = true;
     m_net_items = 1;
+    ignore_mouse_input = true;
 
     if(m_net_cursor >= m_net_items) {
         m_net_cursor = 0;
@@ -940,7 +951,7 @@ void M_Net_Key(int k) {
 //=============================================================================
 /* OPTIONS MENU */
 
-#define    OPTIONS_ITEMS    13
+#define    OPTIONS_ITEMS   14
 #define    SLIDER_RANGE    10
 
 int options_cursor;
@@ -949,6 +960,7 @@ void M_Menu_Options_f(void) {
     key_dest = key_menu;
     m_state = m_options;
     m_entersound = true;
+    ignore_mouse_input = true;
 }
 
 void M_AdjustSliders(int dir) {
@@ -1017,15 +1029,23 @@ void M_AdjustSliders(int dir) {
             }
             break;
 
-        case 9:    // invert mouse
+        case 9:     // enable mouse
+            Cvar_SetValue("in_mouse", !in_mouse.value);
+            break;
+
+        case 10:    // always mlook
+            Cvar_SetValue("in_mlook_lock", !in_mlook_lock.value);
+            break;
+
+        case 11:    // invert mouse
             Cvar_SetValue("m_pitch", -m_pitch.value);
             break;
 
-        case 10:    // lookspring
+        case 12:    // lookspring
             Cvar_SetValue("lookspring", !lookspring.value);
             break;
 
-        case 11:    // lookstrafe
+        case 13:    // lookstrafe
             Cvar_SetValue("lookstrafe", !lookstrafe.value);
             break;
     }
@@ -1091,14 +1111,20 @@ void M_Options_Draw(void) {
     M_Print(16, 96, "            Always Run");
     M_DrawCheckbox(220, 96, cl_forwardspeed.value > 200);
 
-    M_Print(16, 104, "          Invert Mouse");
-    M_DrawCheckbox(220, 104, m_pitch.value < 0);
+    M_Print(16, 104, "          Enable Mouse");
+    M_DrawCheckbox(220, 104, in_mouse.value);
 
-    M_Print(16, 112, "            Lookspring");
-    M_DrawCheckbox(220, 112, lookspring.value);
+    M_Print(16, 112, "     Always Mouse Look");
+    M_DrawCheckbox(220, 112, in_mlook_lock.value);
 
-    M_Print(16, 120, "            Lookstrafe");
-    M_DrawCheckbox(220, 120, lookstrafe.value);
+    M_Print(16, 120, "          Invert Mouse");
+    M_DrawCheckbox(220, 120, m_pitch.value < 0);
+
+    M_Print(16, 128, "            Lookspring");
+    M_DrawCheckbox(220, 128, lookspring.value);
+
+    M_Print(16, 136, "            Lookstrafe");
+    M_DrawCheckbox(220, 136, lookstrafe.value);
 
     if(vid_menudrawfn) {
         M_Print(16, 128, "         Video Options");
@@ -1127,7 +1153,7 @@ void M_Options_Key(int k) {
                 case 2:
                     Cbuf_AddText("exec default.cfg\n");
                     break;
-                case 12:
+                case 14:
                     M_Menu_Video_f();
                     break;
                 default:
@@ -1161,9 +1187,9 @@ void M_Options_Key(int k) {
             break;
     }
 
-    if(options_cursor == 12 && vid_menudrawfn == NULL) {
+    if(options_cursor == 14 && vid_menudrawfn == NULL) {
         if(k == K_UPARROW) {
-            options_cursor = 11;
+            options_cursor = 13;
         } else {
             options_cursor = 0;
         }
@@ -1189,6 +1215,7 @@ void M_Menu_Keys_f(void) {
     key_dest = key_menu;
     m_state = m_keys;
     m_entersound = true;
+    ignore_mouse_input = true;
 }
 
 void M_FindKeysForCommand(char *command, int *twokeys) {
@@ -1342,6 +1369,7 @@ void M_Menu_Video_f(void) {
     key_dest = key_menu;
     m_state = m_video;
     m_entersound = true;
+    ignore_mouse_input = true;
 }
 
 void M_Video_Draw(void) {
@@ -1363,6 +1391,7 @@ void M_Menu_Help_f(void) {
     m_state = m_help;
     m_entersound = true;
     help_page = 0;
+    ignore_mouse_input = true;
 }
 
 void M_Help_Draw(void) {
@@ -1429,6 +1458,7 @@ void M_Menu_Quit_f(void) {
     m_state = m_quit;
     m_entersound = true;
     msgNumber = rand() & 7;
+    ignore_mouse_input = true;
 }
 
 void M_Quit_Key(int key) {
@@ -1439,9 +1469,11 @@ void M_Quit_Key(int key) {
             if(wasInMenus) {
                 m_state = m_quit_prevstate;
                 m_entersound = true;
+                ignore_mouse_input = true;
             } else {
                 key_dest = key_game;
                 m_state = m_none;
+                ignore_mouse_input = false;
             }
             break;
 
@@ -1462,6 +1494,7 @@ void M_Quit_Draw(void) {
         m_recursiveDraw = true;
         M_Draw();
         m_state = m_quit;
+        ignore_mouse_input = true;
     }
 
     M_DrawTextBox(56, 76, 24, 4);
@@ -1487,6 +1520,7 @@ void M_Menu_LanConfig_f(void) {
     key_dest = key_menu;
     m_state = m_lanconfig;
     m_entersound = true;
+    ignore_mouse_input = true;
     if(lanConfig_cursor == -1) {
         if(JoiningGame && TCPIPConfig) {
             lanConfig_cursor = 2;
@@ -1605,6 +1639,7 @@ void M_LanConfig_Key(int key) {
                 m_return_onerror = true;
                 key_dest = key_game;
                 m_state = m_none;
+                ignore_mouse_input = false;
                 Cbuf_AddText(va("connect \"%s\"\n", lanConfig_joinname));
                 break;
             }
@@ -1759,6 +1794,7 @@ void M_Menu_GameOptions_f(void) {
     key_dest = key_menu;
     m_state = m_gameoptions;
     m_entersound = true;
+    ignore_mouse_input = true;
     if(maxplayers == 0) {
         maxplayers = svs.maxclients;
     }
@@ -2098,6 +2134,7 @@ void M_Menu_Search_f(void) {
     slistSilent = true;
     slistLocal = false;
     searchComplete = false;
+    ignore_mouse_input = true;
     NET_Slist_f();
 }
 
@@ -2151,6 +2188,7 @@ void M_Menu_ServerList_f(void) {
     m_return_onerror = false;
     m_return_reason[0] = 0;
     slist_sorted = false;
+    ignore_mouse_input = true;
 }
 
 void M_ServerList_Draw(void) {
@@ -2227,6 +2265,7 @@ void M_ServerList_Key(int k) {
             slist_sorted = false;
             key_dest = key_game;
             m_state = m_none;
+            ignore_mouse_input = false;
             Cbuf_AddText(va("connect \"%s\"\n", hostcache[slist_cursor].cname));
             break;
 
