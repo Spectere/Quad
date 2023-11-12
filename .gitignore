@@ -8,5 +8,6 @@
 .vs/
 
 # Build path/binaries.
+build*/
 cmake-build-*/
 out/
