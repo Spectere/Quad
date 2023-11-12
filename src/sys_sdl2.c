@@ -26,6 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 #include "sys_sdl2.h"
 
+#ifdef POSIX
+#include <dirent.h>
+#include <libgen.h>
+#include <string.h>
+#endif // POSIX
+
 #if defined(POSIX) || defined(MSYS)
 #include <sys/file.h>
 #include <sys/time.h>
@@ -55,14 +61,78 @@ int no_stdout = 0;
 LARGE_INTEGER qpc_frequency;
 #endif // WIN32
 
+#ifdef POSIX
+void find_file(char *path) {
+    /* Attempt to perform a case-insensitive match on POSIX systems. Note that macOS isn't case-sensitive
+     * by default, but case sensitivity can be on a per-filesystem basis, so we include that here, too.
+     * (Technically Windows can also be made to be case-sensitive, but ugh...no.)
+     */
+
+    struct stat stat_buf;
+
+    // First, try an exact match.
+    if(stat(path, &stat_buf) == 0) {
+        return;
+    }
+
+    // Ugh. Okay, split the path, read the directory, and do some case-insensitive string matches.
+    DIR *dir;
+    struct dirent *ent;
+
+    // basename/dirname modify the string, so we need to make a copy first.
+    size_t path_len = strlen(path);
+    char *working_path = calloc(path_len + 1, sizeof(char));
+    strncpy(working_path, path, path_len + 1);
+
+    char *path_file = basename(working_path);
+    char *path_dir = dirname(working_path);
+    char *final_path;
+
+    size_t path_dir_len = strlen(path_dir);
+
+    if((dir = opendir(path_dir)) == NULL) {
+        goto cleanup;
+    }
+
+    while((ent = readdir(dir))) {
+        if(strcasecmp(path_file, ent->d_name) != 0) {
+            continue;
+        }
+
+        size_t filename_len = strlen(ent->d_name);
+        final_path = calloc(path_dir_len + filename_len + 2, sizeof(char));
+        strncpy(final_path, path_dir, path_dir_len + 1);
+        strncat(final_path, "/", 2);
+        strncat(final_path, ent->d_name, filename_len + 1);
+
+        if(stat(final_path, &stat_buf) == 0) {
+            // Copy the final filename back to the path pointer.
+            strncpy(path, final_path, strlen(final_path) + 1);
+        };
+
+        break;
+    }
+
+    closedir(dir);
+
+cleanup:
+    free(working_path);
+}
+#else
+#define find_file(path) path
+#endif // POSIX
+
 int Sys_FileOpenRead(char *path, int *handle) {
     int	h;
     struct stat	fileinfo;
 
+    find_file(path);
     h = open(path, O_RDONLY, 0666);
+
     *handle = h;
-    if (h == -1)
+    if (h == -1) {
         return -1;
+    }
 
     if(fstat (h,&fileinfo) == -1) {
         Sys_Error("Error fstating %s", path);
@@ -76,6 +146,7 @@ int Sys_FileOpenWrite(char *path) {
 
     umask(0);
 
+    find_file(path);
     handle = open(path, O_RDWR | O_CREAT | O_TRUNC, 0666);
 
     if(handle == -1) {
@@ -104,6 +175,7 @@ int Sys_FileWrite(int handle, void *data, int count) {
 int	Sys_FileTime(char *path) {
     struct stat buf;
 
+    find_file(path);
     if(stat(path, &buf) == -1)
         return -1;
 

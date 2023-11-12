@@ -33,7 +33,7 @@
 // Input
 qboolean ignore_mouse_input = false;
 qboolean mouse_captured = false;
-cvar_t in_mouse = { "in_mouse", "1", true };
+cvar_t in_mouse = { "in_mouse", "0", true };
 cvar_t in_mlook_lock = { "in_mlook_lock", "1", true };
 
 // A jumble of globals, locals, defines, and cvars, copied from gl_vidnt.c.
